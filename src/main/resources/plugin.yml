@@ -1,0 +1,7 @@
+name: Prison
+version: '${project.version}'
+main: ru.hogeltbellai.prison.Prison
+api-version: '1.16'
+prefix: Prison
+load: STARTUP
+authors: [HogeltBellai]
