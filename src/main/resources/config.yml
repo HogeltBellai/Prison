@@ -1,0 +1,6 @@
+# Настройка базы данных
+storage:
+  enable: false
+  jdbcUrl: 'jdbc:mysql://localhost:3306/prison?useSSL=false'
+  username: 'root'
+  password: '123123'
