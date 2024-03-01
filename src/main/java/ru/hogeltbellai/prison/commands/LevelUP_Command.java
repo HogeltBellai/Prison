@@ -23,12 +23,12 @@ public class LevelUP_Command implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        ItemsAPI item1 = new ItemsAPI.Builder().material(Material.HONEY_BOTTLE).displayName("Повысить уровень!").lore(" ", "Описание").hideFlags().build();
+        ItemsAPI item1 = new ItemsAPI.Builder().material(Material.HONEY_BOTTLE).displayName("&eПовысить уровень!").lore(" ", "&fОписание").hideFlags().build();
 
         if(args.length == 0) {
             MenuAPI.createMenu(player, "Тест", 27);
 
-            MenuAPI.setMenuItem(player, "Тест", 0, item1.getItem(), player::closeInventory);
+            MenuAPI.setMenuItem(player, "Тест", 13, item1.getItem(), player::closeInventory);
         }
         return false;
     }

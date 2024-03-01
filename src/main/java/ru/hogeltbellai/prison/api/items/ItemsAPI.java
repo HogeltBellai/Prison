@@ -34,7 +34,7 @@ public class ItemsAPI {
         public Builder displayName(String displayName) {
             ItemMeta meta = itemsAPI.item.getItemMeta();
             assert meta != null;
-            meta.setDisplayName(displayName);
+            meta.setDisplayName(new ChatColorAPI().getColoredString(displayName));
             itemsAPI.item.setItemMeta(meta);
             return this;
         }
@@ -42,7 +42,7 @@ public class ItemsAPI {
         public Builder lore(String... lore) {
             ItemMeta meta = itemsAPI.item.getItemMeta();
             assert meta != null;
-            meta.setLore(List.of(lore));
+            meta.setLore(new ChatColorAPI().getColoredStrings(lore));
             itemsAPI.item.setItemMeta(meta);
             return this;
         }
