@@ -22,7 +22,7 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
+    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (player == null) { return ""; }
 
         PlayerAPI playerAPI = new PlayerAPI();
@@ -37,6 +37,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
 
         if (identifier.equals("block")) {
             return String.valueOf(playerAPI.getBlock(player));
+        }
+
+        if (identifier.equals("fraction")) {
+            return String.valueOf(playerAPI.getFraction(player));
         }
         return null;
     }
