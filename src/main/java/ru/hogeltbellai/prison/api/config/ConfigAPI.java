@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import ru.hogeltbellai.prison.Prison;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +15,10 @@ public class ConfigAPI {
     public File configFile;
     public FileConfiguration config;
 
-    public ConfigAPI(Plugin pl, String nameConfig) {
-        configFile = new File(pl.getDataFolder(), nameConfig + ".yml");
+    public ConfigAPI(String nameConfig) {
+        configFile = new File(Prison.getInstance().getDataFolder(), nameConfig + ".yml");
         if (!configFile.exists()) {
-            pl.saveResource(nameConfig + ".yml", false);
+            Prison.getInstance().saveResource(nameConfig + ".yml", false);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
     }

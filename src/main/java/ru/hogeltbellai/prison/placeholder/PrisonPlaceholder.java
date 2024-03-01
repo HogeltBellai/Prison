@@ -27,6 +27,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
 
         PlayerAPI playerAPI = new PlayerAPI();
 
+        if (identifier.equals("level")) {
+            return String.valueOf(playerAPI.getLevel(player));
+        }
+
         if (identifier.equals("money")) {
             return String.valueOf(playerAPI.getMoney(player));
         }
