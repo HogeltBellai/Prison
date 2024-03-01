@@ -9,12 +9,12 @@ import java.math.BigDecimal;
 public class PlayerAPI implements PlayerInterface {
 
     @Override
-    public @NotNull BigDecimal getMoney(Player player) {
-        return Prison.getInstance().getDatabase().getVaule("SELECT money FROM user WHERE name = ?", BigDecimal.class, player.getName());
+    public BigDecimal getMoney(Player player) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT money FROM users WHERE name = ?", BigDecimal.class, player.getName());
     }
 
     @Override
-    public @NotNull int getBlock(Player player) {
-        return Prison.getInstance().getDatabase().getVaule("SELECT blocks FROM user WHERE name = ?", Integer.class, player.getName());
+    public int getBlock(Player player) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT blocks FROM users WHERE name = ?", Integer.class, player.getName());
     }
 }

@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -93,6 +94,8 @@ public class Database {
                             return type.cast(resultSet.getString(1));
                         } else if (type == Integer.class || type == int.class) {
                             return type.cast(resultSet.getInt(1));
+                        } else if (type == BigDecimal.class) {
+                            return type.cast(resultSet.getBigDecimal(1));
                         }
                     }
                 }
