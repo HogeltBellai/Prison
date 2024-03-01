@@ -31,17 +31,9 @@ public class Prison extends JavaPlugin {
 
         new SQLFileReader().saveFile("prison.sql");
 
-        if(config.getConfig().getBoolean("storage.enable")) {
-            database = new Database(config.getConfig().getString("storage.jdbcUrl"), config.getConfig().getString("storage.username"), config.getConfig().getString("storage.password"));
-            String[] sqlCommands = new SQLFileReader().readerFile("prison.sql");
-
-            for (String sqlCommand : sqlCommands) {
-                getDatabase().query(sqlCommand);
-            }
-        }
+        initializeDatabase();
 
         new PrisonPlaceholder().register();
-
         new LevelUP_Command();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -52,6 +44,23 @@ public class Prison extends JavaPlugin {
     public void onDisable() {
         if(config.getConfig().getBoolean("storage.enable")) {
             getDatabase().disconnect();
+        }
+    }
+
+    public void initializeDatabase() {
+        if (getConfig().getBoolean("storage.enable")) {
+            Database database = new Database(
+                    getConfig().getString("storage.jdbcUrl"),
+                    getConfig().getString("storage.username"),
+                    getConfig().getString("storage.password")
+            );
+            readSQLFileReader("prison.sql");
+        }
+    }
+
+    private void readSQLFileReader(String fileName) {
+        for (String sqlCommand : new SQLFileReader().readerFile(fileName + ".sql")) {
+            getDatabase().query(sqlCommand);
         }
     }
 }
