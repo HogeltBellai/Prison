@@ -17,10 +17,10 @@ public class SQLFileReader {
         this.pl = pl;
     }
 
-    public String[] readerFile(String path) {
+    public String[] readerFile(String fileName) {
         List<String> sqlCommandsList = new LinkedList<>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pl.getDataFolder() + "/" + fileName))) {
             String sqlCommands = bufferedReader.lines().collect(Collectors.joining("\n"));
             sqlCommandsList = Arrays.asList(sqlCommands.split(";"));
         } catch (IOException ex) {
