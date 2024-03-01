@@ -1,4 +1,4 @@
-package ru.hogeltbellai.prison.api.menu;
+package ru.hogeltbellai.prison.api.config.menu;
 
 import lombok.Getter;
 import lombok.Setter;

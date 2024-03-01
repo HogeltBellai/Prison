@@ -1,17 +1,14 @@
 package ru.hogeltbellai.prison;
 
 import lombok.Getter;
-import lombok.NonNull;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
-import ru.hogeltbellai.prison.api.menu.MenuAPI;
+import ru.hogeltbellai.prison.api.config.menu.MenuAPI;
 import ru.hogeltbellai.prison.commands.LevelUP_Command;
 import ru.hogeltbellai.prison.listener.PlayerListener;
 import ru.hogeltbellai.prison.placeholder.PrisonPlaceholder;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
-
-import java.awt.*;
 
 /**
  * Programming by HogeltBellai
