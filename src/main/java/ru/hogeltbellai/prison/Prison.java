@@ -54,7 +54,7 @@ public class Prison extends JavaPlugin {
                     getConfig().getString("storage.username"),
                     getConfig().getString("storage.password")
             );
-            readSQLFileReader("prison.sql");
+            readSQLFileReader("prison");
         }
     }
 
