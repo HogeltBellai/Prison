@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Getter
@@ -56,6 +57,7 @@ public class Database {
     public boolean isConnected() {
         try {
             hikariDataSource.getConnection();
+            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -75,5 +77,29 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public <T> T getVaule(String sql, Class<T> type, Object... params) {
+        try(Connection connection = hikariDataSource.getConnection()) {
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                for (int i = 0; i < params.length; i++) {
+                    preparedStatement.setObject(i + 1, params[i]);
+                }
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        if (type == String.class) {
+                            return type.cast(resultSet.getString(1));
+                        } else if (type == Integer.class || type == int.class) {
+                            return type.cast(resultSet.getInt(1));
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

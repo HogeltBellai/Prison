@@ -1,4 +1,4 @@
-package ru.hogeltbellai.prison.api;
+package ru.hogeltbellai.prison.api.config;
 
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;

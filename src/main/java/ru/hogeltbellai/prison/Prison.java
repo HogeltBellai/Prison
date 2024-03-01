@@ -2,11 +2,9 @@ package ru.hogeltbellai.prison;
 
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.hogeltbellai.prison.api.ConfigAPI;
+import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
-
-import java.util.Arrays;
 
 /**
  * Programming by HogeltBellai
