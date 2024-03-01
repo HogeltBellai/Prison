@@ -1,6 +1,7 @@
 package ru.hogeltbellai.prison.storage;
 
 import org.bukkit.plugin.Plugin;
+import ru.hogeltbellai.prison.Prison;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,16 +12,10 @@ import java.util.stream.Collectors;
 
 public class SQLFileReader {
 
-    private Plugin pl;
-
-    public SQLFileReader(Plugin pl) {
-        this.pl = pl;
-    }
-
     public String[] readerFile(String fileName) {
         List<String> sqlCommandsList = new LinkedList<>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pl.getDataFolder() + "/" + fileName))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Prison.getInstance().getDataFolder() + "/" + fileName))) {
             String sqlCommands = bufferedReader.lines().collect(Collectors.joining("\n"));
             sqlCommandsList = Arrays.asList(sqlCommands.split(";"));
         } catch (IOException ex) {
@@ -31,8 +26,8 @@ public class SQLFileReader {
     }
 
     public void saveFile(String fileName) {
-        File pluginFolder = pl.getDataFolder().getParentFile();
-        File file = new File(pluginFolder, pl.getName() + "/" + fileName);
+        File pluginFolder = Prison.getInstance().getDataFolder().getParentFile();
+        File file = new File(pluginFolder, Prison.getInstance().getName() + "/" + fileName);
 
         try {
             if (!file.exists()) {

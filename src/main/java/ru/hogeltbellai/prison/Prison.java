@@ -5,6 +5,7 @@ import lombok.NonNull;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.listener.PlayerListener;
+import ru.hogeltbellai.prison.placeholder.PrisonPlaceholder;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
 
@@ -23,16 +24,18 @@ public class Prison extends JavaPlugin {
         instance = this;
         configAPI = new ConfigAPI(this, "config");
 
-        new SQLFileReader(this).saveFile("prison.sql");
+        new SQLFileReader().saveFile("prison.sql");
 
         if(configAPI.getConfig().getBoolean("storage.enable")) {
             database = new Database(configAPI.getConfig().getString("storage.jdbcUrl"), configAPI.getConfig().getString("storage.username"), configAPI.getConfig().getString("storage.password"));
-            String[] sqlCommands = new SQLFileReader(this).readerFile("prison.sql");
+            String[] sqlCommands = new SQLFileReader().readerFile("prison.sql");
 
             for (String sqlCommand : sqlCommands) {
                 getDatabase().query(sqlCommand);
             }
         }
+
+        new PrisonPlaceholder().register();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
