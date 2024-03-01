@@ -10,7 +10,31 @@
 Prison.getInstance()
 ```
 
-Получение класса HikariCP
+Получение класса Database
 ```
-Prison.getInstance().getDatabase
+Prison.getInstance().getDatabase()
+```
+
+# Создание предмета через ItemsAPI
+Получение ItemsAPI и его билдера
+```
+new ItemsAPI.Builder()
+```
+
+Так же имеются разные настройки кастомного предмета
+```
+.material(Material)
+.displayName(String)
+.lore(String...)
+.hideFlags()
+```
+
+Для того что бы забилдить предмет
+```
+.build()
+```
+
+Наглядный пример тестового предмета и его настройка
+```
+new ItemsAPI.Builder().material(Material.STICK).displayName("&eМой предмет").lore("&cОписание 1", "&eОписание 2").hideFlags().build();
 ```
