@@ -29,7 +29,7 @@ public class Prison extends JavaPlugin {
         config = new ConfigAPI("config");
         configLevel = new ConfigAPI("levels");
 
-        new SQLFileReader().saveFile("prison.sql");
+        new SQLFileReader().saveFile("prison");
 
         initializeDatabase();
 
@@ -59,7 +59,7 @@ public class Prison extends JavaPlugin {
     }
 
     private void readSQLFileReader(String fileName) {
-        for (String sqlCommand : new SQLFileReader().readerFile(fileName + ".sql")) {
+        for (String sqlCommand : new SQLFileReader().readerFile(fileName)) {
             getDatabase().query(sqlCommand);
         }
     }

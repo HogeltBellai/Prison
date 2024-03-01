@@ -15,7 +15,7 @@ public class SQLFileReader {
     public String[] readerFile(String fileName) {
         List<String> sqlCommandsList = new LinkedList<>();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Prison.getInstance().getDataFolder() + "/" + fileName))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Prison.getInstance().getDataFolder() + "/" + fileName +".sql"))) {
             String sqlCommands = bufferedReader.lines().collect(Collectors.joining("\n"));
             sqlCommandsList = Arrays.asList(sqlCommands.split(";"));
         } catch (IOException ex) {
@@ -27,7 +27,7 @@ public class SQLFileReader {
 
     public void saveFile(String fileName) {
         File pluginFolder = Prison.getInstance().getDataFolder().getParentFile();
-        File file = new File(pluginFolder, Prison.getInstance().getName() + "/" + fileName);
+        File file = new File(pluginFolder, Prison.getInstance().getName() + "/" + fileName + ".sql");
 
         try {
             if (!file.exists()) {
