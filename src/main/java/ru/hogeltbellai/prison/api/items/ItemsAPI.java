@@ -1,17 +1,11 @@
 package ru.hogeltbellai.prison.api.items;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 
-import java.util.List;
-
-@Getter
-@Setter
 public class ItemsAPI {
     private ItemStack item;
 
