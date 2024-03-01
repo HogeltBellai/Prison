@@ -9,7 +9,7 @@ import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 
 @Getter
 public class ItemsAPI {
-    private ItemStack item;
+    private final ItemStack item;
 
     public ItemsAPI() {
         item = new ItemStack(Material.STONE);
