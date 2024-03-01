@@ -9,11 +9,11 @@ public class PlayerAPI implements PlayerInterface {
 
     @Override
     public BigDecimal getMoney(Player player) {
-        return new Prison().getDatabase().getVaule("SELECT money FROM user WHERE name = ?", BigDecimal.class, player.getName());
+        return Prison.getInstance().getDatabase().getVaule("SELECT money FROM user WHERE name = ?", BigDecimal.class, player.getName());
     }
 
     @Override
     public int getBlock(Player player) {
-        return new Prison().getDatabase().getVaule("SELECT blocks FROM user WHERE name = ?", Integer.class, player.getName());
+        return Prison.getInstance().getDatabase().getVaule("SELECT blocks FROM user WHERE name = ?", Integer.class, player.getName());
     }
 }

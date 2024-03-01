@@ -1,8 +1,10 @@
 package ru.hogeltbellai.prison;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
+import ru.hogeltbellai.prison.listener.PlayerListener;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
 
@@ -10,12 +12,11 @@ import ru.hogeltbellai.prison.storage.SQLFileReader;
  * Programming by HogeltBellai
  * Site: hogeltbellai.ru
  */
-@Getter
-public final class Prison extends JavaPlugin {
+public class Prison extends JavaPlugin {
 
-    public Prison instance;
+    @Getter public static Prison instance;
     public ConfigAPI configAPI;
-    public Database database;
+    @Getter public Database database;
 
     @Override
     public void onEnable() {
@@ -26,12 +27,14 @@ public final class Prison extends JavaPlugin {
 
         if(configAPI.getConfig().getBoolean("storage.enable")) {
             database = new Database(configAPI.getConfig().getString("storage.jdbcUrl"), configAPI.getConfig().getString("storage.username"), configAPI.getConfig().getString("storage.password"));
-            String[] sqlCommands = new SQLFileReader(this).readerFile(getInstance().getDataFolder() + "/prison.sql");
+            String[] sqlCommands = new SQLFileReader(this).readerFile("prison.sql");
 
             for (String sqlCommand : sqlCommands) {
                 getDatabase().query(sqlCommand);
             }
         }
+
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     @Override
