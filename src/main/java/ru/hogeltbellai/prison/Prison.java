@@ -49,17 +49,17 @@ public class Prison extends JavaPlugin {
 
     public void initializeDatabase() {
         if (getConfig().getBoolean("storage.enable")) {
-            Database database = new Database(
+            database = new Database(
                     getConfig().getString("storage.jdbcUrl"),
                     getConfig().getString("storage.username"),
                     getConfig().getString("storage.password")
             );
-            readSQLFileReader("prison");
+            readSQLFileReader();
         }
     }
 
-    private void readSQLFileReader(String fileName) {
-        for (String sqlCommand : new SQLFileReader().readerFile(fileName)) {
+    private void readSQLFileReader() {
+        for (String sqlCommand : new SQLFileReader().readerFile("prison")) {
             getDatabase().query(sqlCommand);
         }
     }
