@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
-import ru.hogeltbellai.prison.api.config.menu.MenuAPI;
+import ru.hogeltbellai.prison.api.menu.MenuAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
 
 public class LevelUP_Command implements CommandExecutor {
