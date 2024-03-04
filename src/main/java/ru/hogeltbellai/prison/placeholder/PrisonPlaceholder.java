@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 public class PrisonPlaceholder extends PlaceholderExpansion {
+
     @Override
     public @NotNull String getIdentifier() {
         return "prison";
