@@ -16,7 +16,7 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
 
         if(player.getGameMode() != GameMode.CREATIVE) {
-            Prison.getInstance().getDatabase().query("UPDATE user SET blocks = blocks + ? WHERE name = ?", 1, player.getName());
+            Prison.getInstance().getDatabase().query("UPDATE users SET blocks = blocks + ? WHERE name = ?", 1, player.getName());
             player.getInventory().addItem(new ItemStack(event.getBlock().getType()));
             event.setDropItems(false); event.setExpToDrop(0);
         }
