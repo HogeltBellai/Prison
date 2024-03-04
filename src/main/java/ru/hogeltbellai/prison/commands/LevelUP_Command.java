@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
+import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
 
 public class LevelUP_Command implements CommandExecutor {
 
@@ -23,12 +24,9 @@ public class LevelUP_Command implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        ItemsAPI item1 = new ItemsAPI.Builder().material(Material.HONEY_BOTTLE).displayName("&eПовысить уровень!").lore(" ", "&fОписание").hideFlags().build();
 
         if(args.length == 0) {
-            MenuAPI.createMenu(player, "Тест", 27);
-
-            MenuAPI.setMenuItem(player, "Тест", 13, item1.getItem(), player::closeInventory);
+            MenuConfigAPI.createMenuConfig(player, "level");
         }
         return false;
     }

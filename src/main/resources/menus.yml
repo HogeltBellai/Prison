@@ -1,0 +1,18 @@
+# Настройка менюшек в игре
+# Возможные ивенты:
+# updateLevel - Даёт повышения уровня игроку +1
+menus:
+  level:
+    title: "&6Повысить уровень:"
+    size: 27
+    items:
+      item1:
+        slot: 13
+        material: HONEY_BOTTLE
+        display_name: "&eПовысить уровень!"
+        lore:
+          - "&fОписание 1"
+          - "&fОписание 2"
+        action:
+          command: "tell %user% Вы повысили уровень!"
+          event: "updateLevel"

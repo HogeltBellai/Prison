@@ -19,7 +19,7 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.1";
+        return "1.2";
     }
 
     @Override
@@ -41,7 +41,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
         }
 
         if (identifier.equals("fraction")) {
-            return String.valueOf(playerAPI.getFraction(player));
+            if(playerAPI.getFraction(player) != null) {
+                return String.valueOf(playerAPI.getFraction(player));
+            }
+            return "Нет";
         }
         return null;
     }

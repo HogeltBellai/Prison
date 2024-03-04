@@ -22,6 +22,7 @@ public class Prison extends JavaPlugin {
 
     ConfigAPI config;
     ConfigAPI configLevel;
+    ConfigAPI configMenus;
 
     @Override
     public void onEnable() {
@@ -29,6 +30,7 @@ public class Prison extends JavaPlugin {
 
         config = new ConfigAPI("config");
         configLevel = new ConfigAPI("levels");
+        configMenus = new ConfigAPI("menus");
 
         new SQLFileReader().saveFile("prison");
 

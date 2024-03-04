@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 
+import java.util.List;
+
 @Getter
 public class ItemsAPI {
     private final ItemStack item;
@@ -39,6 +41,15 @@ public class ItemsAPI {
             ItemMeta meta = itemsAPI.item.getItemMeta();
             assert meta != null;
             meta.setLore(new ChatColorAPI().getColoredStrings(lore));
+            itemsAPI.item.setItemMeta(meta);
+            return this;
+        }
+
+        public Builder lore(List<String> lore) {
+            ItemMeta meta = itemsAPI.item.getItemMeta();
+            List<String> coloredLore = new ChatColorAPI().getColoredStrings(lore.toArray(new String[0]));
+            assert meta != null;
+            meta.setLore(coloredLore);
             itemsAPI.item.setItemMeta(meta);
             return this;
         }

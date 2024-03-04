@@ -9,22 +9,22 @@ public class PlayerAPI implements PlayerInterface {
 
     @Override
     public void setLevel(Player player, int level) {
-        Prison.getInstance().getDatabase().query("UPDATE user SET level = level + ? WHERE name = ?", level, player.getName());
+        Prison.getInstance().getDatabase().query("UPDATE users SET level = level + ? WHERE name = ?", level, player.getName());
     }
 
     @Override
     public void setMoney(Player player, BigDecimal money) {
-        Prison.getInstance().getDatabase().query("UPDATE user SET money = money + ? WHERE name = ?", money, player.getName());
+        Prison.getInstance().getDatabase().query("UPDATE users SET money = money + ? WHERE name = ?", money, player.getName());
     }
 
     @Override
     public void setBlock(Player player, int block) {
-        Prison.getInstance().getDatabase().query("UPDATE user SET blocks = blocks + ? WHERE name = ?", block, player.getName());
+        Prison.getInstance().getDatabase().query("UPDATE users SET blocks = blocks + ? WHERE name = ?", block, player.getName());
     }
 
     @Override
     public void setFraction(Player player, String fraction) {
-        Prison.getInstance().getDatabase().query("UPDATE user SET fraction = ? WHERE name = ?", fraction, player.getName());
+        Prison.getInstance().getDatabase().query("UPDATE users SET fraction = ? WHERE name = ?", fraction, player.getName());
     }
 
     @Override
