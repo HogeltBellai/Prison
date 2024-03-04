@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.hogeltbellai.prison.Prison;
+import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 public class BlockListener implements Listener {
 
@@ -16,7 +17,7 @@ public class BlockListener implements Listener {
         Player player = event.getPlayer();
 
         if(player.getGameMode() != GameMode.CREATIVE) {
-            Prison.getInstance().getDatabase().query("UPDATE users SET blocks = blocks + ? WHERE name = ?", 1, player.getName());
+            new PlayerAPI().setBlock(player, 1);
             player.getInventory().addItem(new ItemStack(event.getBlock().getType()));
             event.setDropItems(false); event.setExpToDrop(0);
         }
