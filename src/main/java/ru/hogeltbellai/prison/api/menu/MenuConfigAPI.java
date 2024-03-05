@@ -50,16 +50,33 @@ public class MenuConfigAPI {
         if (itemSection.isConfigurationSection("action")) {
             ConfigurationSection actionSection = itemSection.getConfigurationSection("action");
             String command = actionSection.getString("command", "");
-            String action = actionSection.getString("event", "");
+            ActionType action = ActionType.getAction(actionSection.getString("event", ""));
             if (!command.isEmpty()) {
                 command = command.replace("%user%", player.getName());
                 Bukkit.dispatchCommand(player, command);
             }
-            if (!action.isEmpty()) {
-                if (action.equalsIgnoreCase("updateLevel")) {
-                    new PlayerAPI().setLevel(player, 1);
-                }
+            if (action != null) {
+                action.performAction(player);
             }
         }
+    }
+
+    public enum ActionType {
+        UPDATE_LEVEL {
+            @Override
+            public void performAction(Player player) {
+                new PlayerAPI().setLevel(player, 1);
+            }
+        };
+
+        public static ActionType getAction(String value) {
+            try {
+                return ActionType.valueOf(value.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+
+        public abstract void performAction(Player player);
     }
 }

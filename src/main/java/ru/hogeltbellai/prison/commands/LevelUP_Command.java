@@ -24,7 +24,6 @@ public class LevelUP_Command implements CommandExecutor {
 
         Player player = (Player) sender;
 
-
         if(args.length == 0) {
             MenuConfigAPI.createMenuConfig(player, "level");
         }
