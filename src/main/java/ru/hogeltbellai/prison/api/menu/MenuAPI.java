@@ -26,10 +26,16 @@ public class MenuAPI implements Listener {
     private static final Map<UUID, CustomMenu> customMenuMap = new HashMap<>();
 
     public static void createMenu(Player player, String title, int size) {
-        CustomMenu customMenu = customMenuMap.computeIfAbsent(player.getUniqueId(), uuid ->
-                new CustomMenu(title, Bukkit.createInventory(player, size, title)));
-
-        player.openInventory(customMenu.getInventory());
+        CustomMenu customMenu = customMenuMap.get(player.getUniqueId());
+        Inventory inventory;
+        if (customMenu == null || !customMenu.getTitle().equals(title)) {
+            inventory = Bukkit.createInventory(player, size, title);
+            customMenu = new CustomMenu(title, inventory);
+            customMenuMap.put(player.getUniqueId(), customMenu);
+        } else {
+            inventory = customMenu.getInventory();
+        }
+        player.openInventory(inventory);
     }
 
     public static void setMenuItem(Player player, String title, int slot, ItemStack itemStack, Runnable runnable) {

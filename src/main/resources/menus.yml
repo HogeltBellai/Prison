@@ -1,12 +1,13 @@
 # Настройка менюшек в игре
 # Возможные ивенты:
-# updateLevel - Даёт повышения уровня игроку +1
+# UPDATE_LEVEL - Управление уровня игрока
+# SET_MONEY - Управление денег игрока
 menus:
   level:
-    title: "&6Повысить уровень:"
+    title: "Повысить уровень:"
     size: 27
     items:
-      item1:
+      levelup:
         slot: 13
         material: HONEY_BOTTLE
         display_name: "&eПовысить уровень!"
@@ -15,4 +16,27 @@ menus:
           - "&fОписание 2"
         action:
           command: "tell %user% Вы повысили уровень!"
-          event: "updateLevel"
+          event: UPDATE_LEVEL:+:1
+
+      close:
+        slot: 26
+        material: BARRIER
+        display_name: "&cЗакрыть"
+  shop:
+    title: "Магазин:"
+    size: 54
+    items:
+      levelup:
+        slot: 13
+        material: HONEY_BOTTLE
+        display_name: "&eПовысить уровень!"
+        lore:
+          - "&fОписание 1"
+          - "&fОписание 2"
+        action:
+          event: SET_MONEY:-:0.5
+
+      close:
+        slot: 53
+        material: BARRIER
+        display_name: "&cЗакрыть"

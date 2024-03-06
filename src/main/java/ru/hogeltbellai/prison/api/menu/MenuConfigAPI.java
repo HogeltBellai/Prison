@@ -10,6 +10,7 @@ import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuConfigAPI {
@@ -50,13 +51,21 @@ public class MenuConfigAPI {
         if (itemSection.isConfigurationSection("action")) {
             ConfigurationSection actionSection = itemSection.getConfigurationSection("action");
             String command = actionSection.getString("command", "");
-            ActionType action = ActionType.getAction(actionSection.getString("event", ""));
+            String event = actionSection.getString("event", "");
             if (!command.isEmpty()) {
                 command = command.replace("%user%", player.getName());
                 Bukkit.dispatchCommand(player, command);
             }
-            if (action != null) {
-                action.performAction(player, "100");
+            String[] eventParts = event.split(":");
+            if (eventParts.length == 3) {
+                String actionType = eventParts[0];
+                String math = eventParts[1];
+                String amount = eventParts[2];
+                ActionType action = ActionType.getAction(actionType);
+                if (action != null) {
+
+                    action.performAction(player, math, amount);
+                }
             }
         }
     }
@@ -64,16 +73,14 @@ public class MenuConfigAPI {
     public enum ActionType {
         UPDATE_LEVEL {
             @Override
-            public void performAction(Player player, String amount) {
-                int level = Integer.parseInt(amount);
-                new PlayerAPI().setLevel(player, "+", level);
+            public void performAction(Player player, String math, String amount) {
+                new PlayerAPI().setLevel(player, math, Integer.parseInt(amount));
             }
         },
         SET_MONEY {
             @Override
-            public void performAction(Player player, String amount) {
-                int level = Integer.parseInt(amount);
-                new PlayerAPI().setLevel(player, "+", level);
+            public void performAction(Player player, String math, String amount) {
+                new PlayerAPI().setMoney(player, math, BigDecimal.valueOf(Double.parseDouble(amount)));
             }
         };
 
@@ -85,6 +92,6 @@ public class MenuConfigAPI {
             }
         }
 
-        public abstract void performAction(Player player, String amount);
+        public abstract void performAction(Player player, String math, String amount);
     }
 }
