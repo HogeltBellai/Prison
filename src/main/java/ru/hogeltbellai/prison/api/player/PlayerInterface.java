@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 
 public interface PlayerInterface {
 
-    public void setLevel(Player player, int level);
+    public void setLevel(Player player, String math, int level);
 
-    public void setMoney(Player player, BigDecimal money);
+    public void setMoney(Player player, String math, BigDecimal money);
 
     public void setBlock(Player player, int block);
 

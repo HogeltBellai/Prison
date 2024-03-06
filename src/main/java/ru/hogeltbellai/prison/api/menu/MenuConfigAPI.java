@@ -56,7 +56,7 @@ public class MenuConfigAPI {
                 Bukkit.dispatchCommand(player, command);
             }
             if (action != null) {
-                action.performAction(player);
+                action.performAction(player, "100");
             }
         }
     }
@@ -64,8 +64,16 @@ public class MenuConfigAPI {
     public enum ActionType {
         UPDATE_LEVEL {
             @Override
-            public void performAction(Player player) {
-                new PlayerAPI().setLevel(player, 1);
+            public void performAction(Player player, String amount) {
+                int level = Integer.parseInt(amount);
+                new PlayerAPI().setLevel(player, "+", level);
+            }
+        },
+        SET_MONEY {
+            @Override
+            public void performAction(Player player, String amount) {
+                int level = Integer.parseInt(amount);
+                new PlayerAPI().setLevel(player, "+", level);
             }
         };
 
@@ -77,6 +85,6 @@ public class MenuConfigAPI {
             }
         }
 
-        public abstract void performAction(Player player);
+        public abstract void performAction(Player player, String amount);
     }
 }

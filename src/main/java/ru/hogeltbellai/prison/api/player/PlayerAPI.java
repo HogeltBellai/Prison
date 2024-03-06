@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 public class PlayerAPI implements PlayerInterface {
 
     @Override
-    public void setLevel(Player player, int level) {
-        Prison.getInstance().getDatabase().query("UPDATE users SET level = level + ? WHERE name = ?", level, player.getName());
+    public void setLevel(Player player, String math, int level) {
+        Prison.getInstance().getDatabase().query("UPDATE users SET level = level " + math + " ? WHERE name = ?", level, player.getName());
     }
 
     @Override
-    public void setMoney(Player player, BigDecimal money) {
-        Prison.getInstance().getDatabase().query("UPDATE users SET money = money + ? WHERE name = ?", money, player.getName());
+    public void setMoney(Player player, String math, BigDecimal money) {
+        Prison.getInstance().getDatabase().query("UPDATE users SET money = money " + math + " ? WHERE name = ?", money, player.getName());
     }
 
     @Override
