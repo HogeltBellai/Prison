@@ -16,13 +16,15 @@ public class Database {
     public String jdbcUrl;
     public String username;
     public String password;
+    public int poolMax;
 
     private final HikariDataSource hikariDataSource;
 
-    public Database(String jdbcUrl, String username, String password) {
+    public Database(String jdbcUrl, String username, String password, int poolMax) {
         this.jdbcUrl = jdbcUrl;
         this.username = username;
         this.password = password;
+        this.poolMax = poolMax;
 
         HikariConfig hikariConfig = new HikariConfig();
 
@@ -30,7 +32,7 @@ public class Database {
         hikariConfig.setUsername(username);
         hikariConfig.setPassword(password);
 
-        hikariConfig.setMaximumPoolSize(10);
+        hikariConfig.setMaximumPoolSize(poolMax);
         hikariConfig.setLeakDetectionThreshold(10000);
 
         hikariDataSource = new HikariDataSource(hikariConfig);

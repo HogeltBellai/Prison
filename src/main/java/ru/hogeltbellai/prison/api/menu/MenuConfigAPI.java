@@ -50,6 +50,7 @@ public class MenuConfigAPI {
     private static void executeAction(Player player, ConfigurationSection itemSection) {
         if (itemSection.isConfigurationSection("action")) {
             ConfigurationSection actionSection = itemSection.getConfigurationSection("action");
+            assert actionSection != null;
             String command = actionSection.getString("command", "");
             String event = actionSection.getString("event", "");
             if (!command.isEmpty()) {
@@ -57,14 +58,12 @@ public class MenuConfigAPI {
                 Bukkit.dispatchCommand(player, command);
             }
             String[] eventParts = event.split(":");
-            if (eventParts.length == 3) {
+            if (eventParts.length == 2) {
                 String actionType = eventParts[0];
-                String math = eventParts[1];
-                String amount = eventParts[2];
+                String amount = eventParts[1];
                 ActionType action = ActionType.getAction(actionType);
                 if (action != null) {
-
-                    action.performAction(player, math, amount);
+                    action.performAction(player, amount);
                 }
             }
         }
@@ -73,14 +72,16 @@ public class MenuConfigAPI {
     public enum ActionType {
         UPDATE_LEVEL {
             @Override
-            public void performAction(Player player, String math, String amount) {
-                new PlayerAPI().setLevel(player, math, Integer.parseInt(amount));
+            public void performAction(Player player, String amount) {
+                new PlayerAPI().setLevel(player, "+", Integer.parseInt(amount));
             }
         },
-        SET_MONEY {
+        REMOVE_MONEY {
             @Override
-            public void performAction(Player player, String math, String amount) {
-                new PlayerAPI().setMoney(player, math, BigDecimal.valueOf(Double.parseDouble(amount)));
+            public void performAction(Player player, String amount) {
+                if(new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(Double.parseDouble(amount))) >= 0) {
+                    new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(Double.parseDouble(amount)));
+                }
             }
         };
 
@@ -92,6 +93,6 @@ public class MenuConfigAPI {
             }
         }
 
-        public abstract void performAction(Player player, String math, String amount);
+        public abstract void performAction(Player player, String amount);
     }
 }

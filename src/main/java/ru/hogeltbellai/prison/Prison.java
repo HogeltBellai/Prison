@@ -58,7 +58,8 @@ public class Prison extends JavaPlugin {
             database = new Database(
                     getConfig().getString("storage.jdbcUrl"),
                     getConfig().getString("storage.username"),
-                    getConfig().getString("storage.password")
+                    getConfig().getString("storage.password"),
+                    getConfig().getInt("storage.poolMax")
             );
             readSQLFileReader();
         }

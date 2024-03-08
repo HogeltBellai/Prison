@@ -16,7 +16,7 @@ menus:
           - "&fОписание 2"
         action:
           command: "tell %user% Вы повысили уровень!"
-          event: UPDATE_LEVEL:+:1
+          event: UPDATE_LEVEL:1
 
       close:
         slot: 26
@@ -34,7 +34,7 @@ menus:
           - "&fОписание 1"
           - "&fОписание 2"
         action:
-          event: SET_MONEY:-:0.5
+          event: `REMOVE_MONEY`:0.5
 
       close:
         slot: 53
