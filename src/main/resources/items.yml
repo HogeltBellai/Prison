@@ -1,0 +1,21 @@
+# Кастомные вещи
+spade1:
+  material: WOODEN_SHOVEL
+  display_name: "&aДеревянная лопата"
+  lore: {}
+  drop: false
+
+pickaxe1:
+  material: WOODEN_PICKAXE
+  display_name: "&aДеревянная кирка"
+  lore: {}
+
+sword1:
+  material: WOODEN_SWORD
+  display_name: "&aДеревянный меч"
+  lore: {}
+
+beef1:
+  material: COOKED_BEEF
+  display_name: "&aЖаренное мясо"
+  lore: {}

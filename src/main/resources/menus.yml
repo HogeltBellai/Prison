@@ -1,7 +1,8 @@
 # Настройка менюшек в игре
 # Возможные ивенты:
 # UPDATE_LEVEL - Управление уровня игрока
-# SET_MONEY - Управление денег игрока
+# REMOVE_MONEY - Управление денегами игрока
+# GIVE_ITEM - Выдать предмет игроку
 menus:
   level:
     title: "Повысить уровень:"
@@ -15,8 +16,10 @@ menus:
           - "&fОписание 1"
           - "&fОписание 2"
         action:
-          command: "tell %user% Вы повысили уровень!"
-          event: UPDATE_LEVEL:1
+          command:
+            - "tell %user% Вы повысили уровень!"
+          event:
+            - UPDATE_LEVEL:1
 
       close:
         slot: 26
@@ -34,7 +37,8 @@ menus:
           - "&fОписание 1"
           - "&fОписание 2"
         action:
-          event: `REMOVE_MONEY`:0.5
+          event:
+            - REMOVE_MONEY:0.5
 
       close:
         slot: 53

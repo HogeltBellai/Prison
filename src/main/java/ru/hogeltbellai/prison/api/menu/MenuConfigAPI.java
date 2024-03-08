@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
+import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
@@ -51,19 +52,30 @@ public class MenuConfigAPI {
         if (itemSection.isConfigurationSection("action")) {
             ConfigurationSection actionSection = itemSection.getConfigurationSection("action");
             assert actionSection != null;
-            String command = actionSection.getString("command", "");
-            String event = actionSection.getString("event", "");
-            if (!command.isEmpty()) {
-                command = command.replace("%user%", player.getName());
-                Bukkit.dispatchCommand(player, command);
-            }
-            String[] eventParts = event.split(":");
-            if (eventParts.length == 2) {
-                String actionType = eventParts[0];
-                String amount = eventParts[1];
-                ActionType action = ActionType.getAction(actionType);
-                if (action != null) {
-                    action.performAction(player, amount);
+            List<String> commands = actionSection.getStringList("command");
+            List<String> messages = actionSection.getStringList("message");
+            List<String> events = actionSection.getStringList("event");
+            if (!commands.isEmpty() || !events.isEmpty() || !messages.isEmpty()) {
+                for (String command : commands) {
+                    command = command.replace("%user%", player.getName());
+                    Bukkit.dispatchCommand(player, command);
+                }
+                for (String message : messages) {
+                    message = message.replace("&", "§");
+                    player.sendMessage(message);
+                }
+                for (String event : events) {
+                    String[] eventParts = event.split(":");
+                    String actionType = eventParts[0];
+                    String arg = eventParts[1];
+                    ActionType action = ActionType.getAction(actionType);
+                    if (action != null) {
+                        if(eventParts.length == 2) {
+                            action.performAction(player, arg);
+                        } else if(eventParts.length == 3) {
+                            action.performAction(player, arg, eventParts[2]);
+                        }
+                    }
                 }
             }
         }
@@ -72,15 +84,30 @@ public class MenuConfigAPI {
     public enum ActionType {
         UPDATE_LEVEL {
             @Override
-            public void performAction(Player player, String amount) {
-                new PlayerAPI().setLevel(player, "+", Integer.parseInt(amount));
+            public void performAction(Player player, String... arg) {
+                new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
             }
         },
         REMOVE_MONEY {
             @Override
-            public void performAction(Player player, String amount) {
-                if(new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(Double.parseDouble(amount))) >= 0) {
-                    new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(Double.parseDouble(amount)));
+            public void performAction(Player player, String... arg) {
+                if(new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(Double.parseDouble(arg[0]))) >= 0) {
+                    new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(Double.parseDouble(arg[0])));
+                }
+            }
+        },
+        GIVE_ITEM {
+            @Override
+            public void performAction(Player player, String... arg) {
+                ItemsConfigAPI.giveItem(player, arg[0]);
+            }
+        },
+        BUY_ITEM {
+            @Override
+            public void performAction(Player player, String... arg) {
+                if(new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(Double.parseDouble(arg[1]))) >= 0) {
+                    new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(Double.parseDouble(arg[1])));
+                    ItemsConfigAPI.giveItem(player, arg[0]);
                 }
             }
         };
@@ -93,6 +120,6 @@ public class MenuConfigAPI {
             }
         }
 
-        public abstract void performAction(Player player, String amount);
+        public abstract void performAction(Player player, String... arg);
     }
 }

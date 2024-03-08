@@ -22,16 +22,15 @@ public class Prison extends JavaPlugin {
     @Getter public Database database;
 
     ConfigAPI config;
-    ConfigAPI configLevel;
-    ConfigAPI configMenus;
 
     @Override
     public void onEnable() {
         instance = this;
 
         config = new ConfigAPI("config");
-        configLevel = new ConfigAPI("levels");
-        configMenus = new ConfigAPI("menus");
+        new ConfigAPI("levels");
+        new ConfigAPI("menus");
+        new ConfigAPI("items");
 
         new SQLFileReader().saveFile("prison");
 
