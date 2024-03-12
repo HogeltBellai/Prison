@@ -19,3 +19,6 @@ messages:
     no_money: 'У вас недостаточно денег'
   items:
     give: 'Вы получили %item%!'
+  sell:
+    sell_block: 'Вы продали блоки и получили %money%'
+    sell_error: 'У вас нечего продавать'

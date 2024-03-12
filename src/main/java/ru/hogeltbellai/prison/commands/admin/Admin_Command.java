@@ -20,7 +20,7 @@ public class Admin_Command implements CommandExecutor {
     Location pos2;
 
     public Admin_Command() {
-        Prison.getInstance().getCommand("admin").setExecutor(this);
+        Prison.getInstance().getCommand("prison").setExecutor(this);
     }
 
     @Override
@@ -29,40 +29,42 @@ public class Admin_Command implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if(args.length == 0) {
-            player.sendMessage(new ChatColorAPI().getColoredString("&7Указать позиция - &f/admin pos1/pos2"));
-            player.sendMessage(new ChatColorAPI().getColoredString("&7Создать шахту - &f/admin create <название> <блок1:шанс> <блок2:шанс>"));
-            player.sendMessage(new ChatColorAPI().getColoredString("&7Удалить шахту - &f/admin delete <название>"));
-            return true;
-        }
-
-        if(args.length == 1 && args[0].equalsIgnoreCase("pos1")) {
-            pos1 = player.getLocation();
-            player.sendMessage("Позиция 1 установлена.");
-        }
-
-        if(args.length == 1 && args[0].equalsIgnoreCase("pos2")) {
-            pos2 = player.getLocation();
-            player.sendMessage("Позиция 2 установлена.");
-        }
-
-        if(args.length > 3 && args[0].equalsIgnoreCase("create")) {
-            if (pos1 == null || pos2 == null) {
-                player.sendMessage("Сначала установите обе позиции pos1 и pos2");
+        if(player.hasPermission("prison.admin")) {
+            if (args.length == 0) {
+                player.sendMessage(new ChatColorAPI().getColoredString("&7Указать позиция - &f/prison pos1/pos2"));
+                player.sendMessage(new ChatColorAPI().getColoredString("&7Создать шахту - &f/prison create <название> <блок1:шанс> <блок2:шанс>"));
+                player.sendMessage(new ChatColorAPI().getColoredString("&7Удалить шахту - &f/prison delete <название>"));
                 return true;
             }
-            String name = args[1];
-            if (!(new MineAPI().getAllMines().stream().anyMatch(mine -> mine.getName().equalsIgnoreCase(name)))) {
-                List<String> blockChances = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
 
-                if (new MineAPI().createMine(player, name, pos1, pos2, blockChances)) {
-                    player.sendMessage("Шахта успешно создана");
-                } else {
-                    player.sendMessage("Не удалось создать шахту");
+            if (args.length == 1 && args[0].equalsIgnoreCase("pos1")) {
+                pos1 = player.getLocation();
+                player.sendMessage("Позиция 1 установлена.");
+            }
+
+            if (args.length == 1 && args[0].equalsIgnoreCase("pos2")) {
+                pos2 = player.getLocation();
+                player.sendMessage("Позиция 2 установлена.");
+            }
+
+            if (args.length > 3 && args[0].equalsIgnoreCase("create")) {
+                if (pos1 == null || pos2 == null) {
+                    player.sendMessage("Сначала установите обе позиции pos1 и pos2");
+                    return true;
                 }
-            } else {
-                player.sendMessage("Шахта с таким названием уже существует");
-                return true;
+                String name = args[1];
+                if (!(new MineAPI().getAllMines().stream().anyMatch(mine -> mine.getName().equalsIgnoreCase(name)))) {
+                    List<String> blockChances = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
+
+                    if (new MineAPI().createMine(player, name, pos1, pos2, blockChances)) {
+                        player.sendMessage("Шахта успешно создана");
+                    } else {
+                        player.sendMessage("Не удалось создать шахту");
+                    }
+                } else {
+                    player.sendMessage("Шахта с таким названием уже существует");
+                    return true;
+                }
             }
         }
         return false;

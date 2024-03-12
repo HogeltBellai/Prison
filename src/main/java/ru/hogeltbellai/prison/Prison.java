@@ -11,6 +11,7 @@ import ru.hogeltbellai.prison.commands.Shop_Command;
 import ru.hogeltbellai.prison.commands.admin.Admin_Command;
 import ru.hogeltbellai.prison.listener.BlockListener;
 import ru.hogeltbellai.prison.listener.PlayerListener;
+import ru.hogeltbellai.prison.listener.SellListener;
 import ru.hogeltbellai.prison.placeholder.PrisonPlaceholder;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
@@ -35,6 +36,7 @@ public class Prison extends JavaPlugin {
         new ConfigAPI("menus");
         new ConfigAPI("items");
         new ConfigAPI("mines");
+        new ConfigAPI("blocks");
 
         new SQLFileReader().saveFile("prison");
 
@@ -49,6 +51,8 @@ public class Prison extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new SellListener(), this);
+
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
 
         new MineAPI().new MineFillTask().runTaskTimer(this, 0, getConfig().getInt("prison.mine.time") * 1200L);
