@@ -50,7 +50,7 @@ public class SellListener implements Listener {
         sellBlocks(player);
     }
 
-    public static void sellBlocks(Player player) {
+    public void sellBlocks(Player player) {
         DecimalFormat df = new DecimalFormat("0.00");
         Map<String, Double> blockPrices = new BlockAPI().getAllBlockPrices();
         Inventory inventory = player.getInventory();
