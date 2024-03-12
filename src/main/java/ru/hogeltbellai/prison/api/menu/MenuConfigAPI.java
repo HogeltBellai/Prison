@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
+import ru.hogeltbellai.prison.api.message.MessageAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
@@ -108,6 +109,8 @@ public class MenuConfigAPI {
                 if(new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(Double.parseDouble(arg[1]))) >= 0) {
                     new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(Double.parseDouble(arg[1])));
                     ItemsConfigAPI.giveItem(player, arg[0]);
+                } else {
+                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.money.no_money"));
                 }
             }
         };

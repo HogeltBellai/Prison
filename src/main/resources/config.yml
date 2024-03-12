@@ -8,3 +8,8 @@ storage:
   poolMax: 10
 
 # Настройка сообщений
+messages:
+  money:
+    no_money: 'У вас недостаточно денег'
+  items:
+    give: 'Вы получили %item%!'

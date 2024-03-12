@@ -12,3 +12,5 @@ softdepend:
 commands:
   levelup:
   shop:
+  help:
+  admin:

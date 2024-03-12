@@ -1,11 +1,11 @@
 package ru.hogeltbellai.prison.api.items;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
+import ru.hogeltbellai.prison.api.message.MessageAPI;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +38,7 @@ public class ItemsConfigAPI {
         ItemStack item = getItem(itemName);
         if (item != null) {
             player.getInventory().addItem(item);
+            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.items.give").replace("%item%", item.getItemMeta().getDisplayName()));
         }
     }
 
@@ -46,6 +47,7 @@ public class ItemsConfigAPI {
         if (item != null) {
             item.setAmount(amount);
             player.getInventory().addItem(item);
+            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.items.give").replace("%item%", item.getItemMeta().getDisplayName()).replace("%amount%", String.valueOf(amount)));
         }
     }
 

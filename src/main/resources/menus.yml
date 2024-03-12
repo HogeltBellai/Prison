@@ -3,7 +3,9 @@
 # UPDATE_LEVEL - Управление уровня игрока
 # REMOVE_MONEY - Управление денегами игрока
 # GIVE_ITEM - Выдать предмет игроку
+# BUY_ITEM - Купить предмет
 menus:
+  # поднять уровень
   level:
     title: "Повысить уровень:"
     size: 27
@@ -25,22 +27,75 @@ menus:
         slot: 26
         material: BARRIER
         display_name: "&cЗакрыть"
+
+  # магазин
   shop:
     title: "Магазин:"
     size: 54
     items:
-      levelup:
-        slot: 13
-        material: HONEY_BOTTLE
-        display_name: "&eПовысить уровень!"
+      spade1:
+        slot: 0
+        material: WOODEN_SHOVEL
+        display_name: "&aДеревянная лопата"
         lore:
-          - "&fОписание 1"
-          - "&fОписание 2"
+          - ""
+          - "&fКупить за 5"
         action:
           event:
-            - REMOVE_MONEY:0.5
+            - BUY_ITEM:spade1:5
+
+      pickaxe1:
+        slot: 1
+        material: WOODEN_PICKAXE
+        display_name: "&aДеревянная кирка"
+        lore:
+          - ""
+          - "&fКупить за 5"
+        action:
+          event:
+            - BUY_ITEM:pickaxe1:5
+
+      sword1:
+        slot: 2
+        material: WOODEN_SWORD
+        display_name: "&aДеревянный меч"
+        lore:
+          - ""
+          - "&fКупить за 5"
+        action:
+          event:
+            - BUY_ITEM:sword1:5
+
+      beef1:
+        slot: 9
+        material: COOKED_BEEF
+        display_name: "&aЖаренное мясо"
+        lore:
+          - ""
+          - "&fКупить за 2"
+        action:
+          event:
+            - BUY_ITEM:beef1:2
 
       close:
         slot: 53
+        material: BARRIER
+        display_name: "&cЗакрыть"
+
+  # помощь
+  help:
+    title: "Помощь:"
+    size: 27
+    items:
+      spade1:
+        slot: 14
+        material: BOOK
+        display_name: "&eПомощь новым игрокам"
+        lore:
+          - ""
+          - "&fТут текст"
+
+      close:
+        slot: 26
         material: BARRIER
         display_name: "&cЗакрыть"

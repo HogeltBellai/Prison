@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
 
-public class LevelUP_Command implements CommandExecutor {
+public class Help_Command implements CommandExecutor {
 
-    public LevelUP_Command() {
-        Prison.getInstance().getCommand("levelup").setExecutor(this);
+    public Help_Command() {
+        Prison.getInstance().getCommand("help").setExecutor(this);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class LevelUP_Command implements CommandExecutor {
         Player player = (Player) sender;
 
         if(args.length == 0) {
-            MenuConfigAPI.createMenuConfig(player, "level");
+            MenuConfigAPI.createMenuConfig(player, "help");
         }
         return false;
     }

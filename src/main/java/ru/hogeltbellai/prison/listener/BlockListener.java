@@ -7,7 +7,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 public class BlockListener implements Listener {
