@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.location.LocationAPI;
@@ -187,6 +188,16 @@ public class MineAPI {
         public WeightedBlock(String blockName, int weight) {
             this.blockName = blockName;
             this.weight = weight;
+        }
+    }
+
+    public class MineFillTask extends BukkitRunnable {
+
+        @Override
+        public void run() {
+            Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
+                new MineAPI().getAllMines().forEach(mine -> new MineAPI().fillMine(mine.getName()));
+            }, 0, Prison.getInstance().getConfig().getInt("prison.mine.time") * 1200L);
         }
     }
 }

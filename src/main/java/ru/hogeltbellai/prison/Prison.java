@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
+import ru.hogeltbellai.prison.api.mine.MineAPI;
 import ru.hogeltbellai.prison.commands.Help_Command;
 import ru.hogeltbellai.prison.commands.LevelUP_Command;
 import ru.hogeltbellai.prison.commands.Shop_Command;
@@ -49,6 +50,8 @@ public class Prison extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
+
+        new MineAPI().new MineFillTask().runTaskTimer(this, 0, getConfig().getInt("prison.mine.time") * 1200L);
     }
 
     @Override
