@@ -1,4 +1,4 @@
-package ru.hogeltbellai.prison.game.mine;
+package ru.hogeltbellai.prison.api.mine;
 
 import lombok.Getter;
 import org.bukkit.Location;

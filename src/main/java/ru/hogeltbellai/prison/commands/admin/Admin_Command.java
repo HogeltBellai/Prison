@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 import ru.hogeltbellai.prison.api.mine.MineAPI;
-import ru.hogeltbellai.prison.game.mine.Mine;
 
 import java.util.ArrayList;
 import java.util.Arrays;

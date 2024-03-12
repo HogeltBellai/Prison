@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.location.LocationAPI;
-import ru.hogeltbellai.prison.game.mine.Mine;
 
 import java.util.ArrayList;
 import java.util.List;
