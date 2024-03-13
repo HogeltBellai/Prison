@@ -11,6 +11,7 @@
 %prison_block% - Блоки игрока
 %prison_money% - Денег у игрока
 %prison_fraction% - Фракция игрока
+%prison_task_money_(название конфигурации уровня)% - Взять задания для чего либо
 ```
 
 # API use
