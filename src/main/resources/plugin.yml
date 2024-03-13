@@ -10,6 +10,7 @@ softdepend:
 
 commands:
   levelup:
+  upgrade:
   shop:
   help:
   prison:

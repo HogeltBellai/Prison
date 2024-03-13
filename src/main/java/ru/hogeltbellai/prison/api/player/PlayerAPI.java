@@ -63,6 +63,12 @@ public class PlayerAPI implements PlayerInterface {
     }
 
     public int getDataBlock(int id, String blockType) {
-        return Prison.getInstance().getDatabase().getVaule("SELECT amount FROM users_blocks WHERE player_id = ? AND block_type = ?", Integer.class, id, blockType);
+        Integer result = Prison.getInstance().getDatabase().getVaule("SELECT amount FROM users_blocks WHERE player_id = ? AND block_type = ?", Integer.class, id, blockType);
+
+        if (result != null) {
+            return result;
+        } else {
+            return 0;
+        }
     }
 }

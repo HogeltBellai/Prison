@@ -11,14 +11,12 @@ import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.message.MessageAPI;
+import ru.hogeltbellai.prison.api.newtask.TaskAPI;
+import ru.hogeltbellai.prison.api.newtask.TaskConfiguration;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
-import ru.hogeltbellai.prison.api.task.TaskAPI;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuConfigAPI {
 
@@ -97,11 +95,17 @@ public class MenuConfigAPI {
             @Override
             public void performAction(Player player, String... arg) {
                 int level = new PlayerAPI().getLevel(player) + 1;
-                if(TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), TaskAPI.TaskManager.getTask(level))) {
-                    new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
-                    new PlayerAPI().setMoney(player, "-", TaskAPI.TaskManager.getTask(level).getMoney());
+                TaskConfiguration currentTask = TaskAPI.TaskManager.getTask(level, "levels");
+
+                if (currentTask != null) {
+                    if (TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), currentTask)) {
+                        new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
+                        new PlayerAPI().setMoney(player, "-", currentTask.getMoney());
+                    } else {
+                        player.sendMessage("Не все условия выполнены!");
+                    }
                 } else {
-                    player.sendMessage("Не все условия выполнены!");
+                    player.sendMessage("Вы достигли максимального уровня!");
                 }
             }
         },
@@ -127,6 +131,22 @@ public class MenuConfigAPI {
                     ItemsConfigAPI.giveItem(player, arg[0]);
                 } else {
                     player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.money.no_money"));
+                }
+            }
+        },
+        UPGRADE_ITEM {
+            @Override
+            public void performAction(Player player, String... arg) {
+                int level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
+                if(TaskAPI.TaskManager.getTask(level, "upgrades") != null) {
+                    if (TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), TaskAPI.TaskManager.getTask(level, "upgrades"))) {
+                        new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
+                        new PlayerAPI().setMoney(player, "-", TaskAPI.TaskManager.getTask(level, "upgrades").getMoney());
+                    } else {
+                        player.sendMessage("Не все условия выполнены!");
+                    }
+                } else {
+                    player.sendMessage("Вы достигли максимального уровня!");
                 }
             }
         };
