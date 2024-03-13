@@ -82,6 +82,21 @@ public class Database {
         }
     }
 
+    public int queryUpdate(String sql, Object... par) {
+        try (Connection connection = hikariDataSource.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                for (int i = 0; i < par.length; i++) {
+                    preparedStatement.setObject(i + 1, par[i]);
+                }
+
+                return preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public <T> T getVaule(String sql, Class<T> type, Object... params) {
         try(Connection connection = hikariDataSource.getConnection()) {
 

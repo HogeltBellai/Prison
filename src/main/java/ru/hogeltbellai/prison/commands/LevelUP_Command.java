@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
+import ru.hogeltbellai.prison.api.player.PlayerAPI;
+import ru.hogeltbellai.prison.api.task.Task;
+import ru.hogeltbellai.prison.api.task.TaskAPI;
 
 public class LevelUP_Command implements CommandExecutor {
 

@@ -1,5 +1,6 @@
 package ru.hogeltbellai.prison.api.block;
 
+import org.bukkit.Material;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 
 import java.util.HashMap;

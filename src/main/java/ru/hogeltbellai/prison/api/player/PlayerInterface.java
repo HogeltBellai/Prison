@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 
 public interface PlayerInterface {
 
+    public int getId(Player player);
+
+    // users
     public void setLevel(Player player, String math, int level);
 
     public void setMoney(Player player, String math, BigDecimal money);
@@ -21,4 +24,9 @@ public interface PlayerInterface {
     public int getBlock(Player player);
 
     public String getFraction(Player player);
+
+    // users_blocks
+    public void setBlockData(int id, String type, int block);
+
+    public int getDataBlock(int id, String blockType);
 }

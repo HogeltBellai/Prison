@@ -1,5 +1,6 @@
 package ru.hogeltbellai.prison.api.menu;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,9 +12,13 @@ import ru.hogeltbellai.prison.api.items.ItemsAPI;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.message.MessageAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
+import ru.hogeltbellai.prison.api.task.TaskAPI;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuConfigAPI {
 
@@ -36,8 +41,13 @@ public class MenuConfigAPI {
                         Material material = Material.matchMaterial(itemSection.getString("material", "STONE"));
                         String displayName = ChatColor.translateAlternateColorCodes('&', itemSection.getString("display_name", ""));
                         List<String> lore = itemSection.getStringList("lore");
+                        StringBuilder loreBuilder = new StringBuilder();
 
-                        ItemsAPI item = new ItemsAPI.Builder().material(material).displayName(displayName).lore(lore).hideFlags().build();
+                        for (String line : lore) {
+                            String blocksPlaceholder = PlaceholderAPI.setPlaceholders(player, line);
+                            loreBuilder.append(blocksPlaceholder).append("\n");
+                        }
+                        ItemsAPI item = new ItemsAPI.Builder().material(material).displayName(displayName).lore(loreBuilder.toString().split("\n")).hideFlags().build();
 
                         MenuAPI.setMenuItem(player, title, slot, item.getItem(), () -> {
                             executeAction(player, itemSection);
@@ -86,7 +96,13 @@ public class MenuConfigAPI {
         UPDATE_LEVEL {
             @Override
             public void performAction(Player player, String... arg) {
-                new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
+                int level = new PlayerAPI().getLevel(player) + 1;
+                if(TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), TaskAPI.TaskManager.getTask(level))) {
+                    new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
+                    new PlayerAPI().setMoney(player, "-", TaskAPI.TaskManager.getTask(level).getMoney());
+                } else {
+                    player.sendMessage("Не все условия выполнены!");
+                }
             }
         },
         REMOVE_MONEY {

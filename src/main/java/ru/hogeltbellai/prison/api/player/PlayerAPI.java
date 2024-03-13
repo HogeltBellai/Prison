@@ -4,12 +4,18 @@ import org.bukkit.entity.Player;
 import ru.hogeltbellai.prison.Prison;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 
 public class PlayerAPI implements PlayerInterface {
 
     @Override
+    public int getId(Player player) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT id FROM users WHERE name = ?", Integer.class, player.getName());
+    }
+
+    @Override
     public void setLevel(Player player, String math, int level) {
-        Prison.getInstance().getDatabase().query("UPDATE users SET level = level " + math + " ? WHERE name = ?", level, player.getName());
+        Prison.getInstance().getDatabase().queryUpdate("UPDATE users SET level = level " + math + " ? WHERE name = ?", level, player.getName());
     }
 
     @Override
@@ -19,7 +25,7 @@ public class PlayerAPI implements PlayerInterface {
 
     @Override
     public void setBlock(Player player, int block) {
-        Prison.getInstance().getDatabase().query("UPDATE users SET blocks = blocks + ? WHERE name = ?", block, player.getName());
+        Prison.getInstance().getDatabase().queryUpdate("UPDATE users SET blocks = blocks + ? WHERE name = ?", block, player.getName());
     }
 
     @Override
@@ -45,5 +51,18 @@ public class PlayerAPI implements PlayerInterface {
     @Override
     public String getFraction(Player player) {
         return Prison.getInstance().getDatabase().getVaule("SELECT fraction FROM users WHERE name = ?", String.class, player.getName());
+    }
+
+    @Override
+    public void setBlockData(int id, String type, int block) {
+        int rowCount = Prison.getInstance().getDatabase().queryUpdate("UPDATE users_blocks SET amount = amount + ? WHERE player_id = ? AND block_type = ?", block, id, type);
+
+        if (rowCount == 0) {
+            Prison.getInstance().getDatabase().query("INSERT INTO users_blocks (player_id, block_type, amount) VALUES (?, ?, ?)", id, type, block);
+        }
+    }
+
+    public int getDataBlock(int id, String blockType) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT amount FROM users_blocks WHERE player_id = ? AND block_type = ?", Integer.class, id, blockType);
     }
 }

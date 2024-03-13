@@ -98,7 +98,7 @@ public class MineAPI {
                     Block block = blockLocation.getBlock();
                     String randomBlock = getRandomBlock(blockChances, random);
                     if (randomBlock != null) {
-                        setBlockInNativeWorld(block.getWorld(), x, y, z, Material.valueOf(randomBlock), true);
+                        setBlockInNativeWorld(block.getWorld(), x, y, z, Material.valueOf(randomBlock));
                     }
                 }
             }
@@ -129,11 +129,11 @@ public class MineAPI {
         return null;
     }
 
-    public void setBlockInNativeWorld(World world, int x, int y, int z, Material material, boolean applyPhysics) {
+    public void setBlockInNativeWorld(World world, int x, int y, int z, Material material) {
         net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
         BlockPosition bp = new BlockPosition(x, y, z);
         IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
-        nmsWorld.setTypeAndData(bp, ibd, applyPhysics ? 3 : 2);
+        nmsWorld.setTypeAndData(bp, ibd, 3);
     }
 
     public boolean inMinePlayer(Player player, String name) {

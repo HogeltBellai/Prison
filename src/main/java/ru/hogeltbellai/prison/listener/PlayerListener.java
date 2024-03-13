@@ -6,6 +6,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import ru.hogeltbellai.prison.Prison;
+import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 public class PlayerListener implements Listener {
 

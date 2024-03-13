@@ -20,6 +20,8 @@ public class BlockListener implements Listener {
             if(new MineAPI().inMineBlock(event.getBlock(), mine.getName())) {
                 if (player.getGameMode() != GameMode.CREATIVE) {
                     new PlayerAPI().setBlock(player, 1);
+                    new PlayerAPI().setBlockData(new PlayerAPI().getId(player), event.getBlock().getType().toString(), 1);
+                    player.sendMessage("" + new PlayerAPI().getDataBlock(new PlayerAPI().getId(player), event.getBlock().getType().toString()));
 
                     player.getInventory().addItem(new ItemStack(event.getBlock().getType()));
                     event.setDropItems(false);
