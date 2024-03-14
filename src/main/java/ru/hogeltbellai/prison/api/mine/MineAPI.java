@@ -106,6 +106,10 @@ public class MineAPI {
     }
 
     private String getRandomBlock(List<String> blockChances, Random random) {
+        if (blockChances.isEmpty()) {
+            return null;
+        }
+
         List<WeightedBlock> weightedBlocks = new ArrayList<>();
         int totalWeight = 0;
 
@@ -117,6 +121,10 @@ public class MineAPI {
             totalWeight += weight;
         }
 
+        if (totalWeight == 0) {
+            return null;
+        }
+
         int randomNumber = random.nextInt(totalWeight);
         int cumulativeWeight = 0;
 
@@ -126,6 +134,7 @@ public class MineAPI {
                 return weightedBlock.blockName;
             }
         }
+
         return null;
     }
 

@@ -40,7 +40,6 @@ public class TaskAPI {
 
         BigDecimal money = BigDecimal.valueOf(section.getDouble("money"));
 
-        // Создаем экземпляр TaskConfiguration с переданным именем конфигурации
         return new TaskConfiguration(configName, blocks, money);
     }
 

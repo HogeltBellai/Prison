@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
+import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
 
 public class Upgrade_Command implements CommandExecutor {
@@ -21,6 +22,7 @@ public class Upgrade_Command implements CommandExecutor {
         Player player = (Player) sender;
 
         if(args.length == 0) {
+            if (ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand()) == 0) { return true; }
             MenuConfigAPI.createMenuConfig(player, "upgrade");
         }
         return false;

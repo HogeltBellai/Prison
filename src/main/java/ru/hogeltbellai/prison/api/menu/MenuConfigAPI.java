@@ -137,16 +137,16 @@ public class MenuConfigAPI {
         UPGRADE_ITEM {
             @Override
             public void performAction(Player player, String... arg) {
-                int level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
+                int level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand()) + 1;
                 if(TaskAPI.TaskManager.getTask(level, "upgrades") != null) {
                     if (TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), TaskAPI.TaskManager.getTask(level, "upgrades"))) {
-                        new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
+                        ItemsConfigAPI.setLevelToLore(player.getInventory().getItemInMainHand(), level);
                         new PlayerAPI().setMoney(player, "-", TaskAPI.TaskManager.getTask(level, "upgrades").getMoney());
                     } else {
-                        player.sendMessage("Не все условия выполнены!");
+                        player.sendMessage("Не все условия выполнены!" + level);
                     }
                 } else {
-                    player.sendMessage("Вы достигли максимального уровня!");
+                    player.sendMessage("Вы достигли максимального уровня!" + level);
                 }
             }
         };

@@ -3,6 +3,7 @@ package ru.hogeltbellai.prison.placeholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.newtask.TaskAPI;
 import ru.hogeltbellai.prison.api.newtask.TaskConfiguration;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
@@ -47,43 +48,71 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
         }
 
         if (identifier.equals("fraction")) {
-            if(playerAPI.getFraction(player) != null) {
-                return String.valueOf(playerAPI.getFraction(player));
-            }
-            return "Нет";
+            String fraction = new PlayerAPI().getFraction(player);
+            return fraction != null ? fraction : "Нет";
         }
 
-        if (identifier.startsWith("task_block") || identifier.startsWith("task_money")) {
+        if (identifier.startsWith("block")) {
             String[] parts = identifier.split("_");
-            if (parts.length == 3) {
-                String configName = parts[2];
-                int playerLevel = new PlayerAPI().getLevel(player) + 1;
-                TaskConfiguration task = TaskAPI.TaskManager.getTask(playerLevel, configName);
+            StringBuilder loreBuilder = new StringBuilder();
 
-                if (task != null) {
-                    String result;
-                    if (identifier.startsWith("task_block")) {
-                        result = task.getBlocks().entrySet().stream()
-                                .map(entry -> {
-                                    String blockType = entry.getKey();
-                                    int playerBlockCount = new PlayerAPI().getDataBlock(new PlayerAPI().getId(player), blockType);
-                                    int requiredBlockCount = entry.getValue();
+            if (parts.length == 2) {
+                String arg = parts[1];
+                int level = 0;
+                TaskConfiguration task = null;
 
-                                    String status = playerBlockCount >= requiredBlockCount ? "§a✔" : "§c✘";
-                                    return String.format("§f%s§7: §e%d§7/§f%d %s", blockType, playerBlockCount, requiredBlockCount, status);
-                                })
-                                .collect(Collectors.joining("\n"));
-                    } else {
-                        BigDecimal playerMoneyCount = new PlayerAPI().getMoney(player);
-                        BigDecimal requiredMoneyCount = task.getMoney();
-
-                        String status = playerMoneyCount.compareTo(requiredMoneyCount) >= 0 ? "§a✔" : "§c✘";
-                        result = String.format("§fДенег§7: §e%s§7/§f%s %s", playerMoneyCount, requiredMoneyCount, status);
-                    }
-                    return result;
-                } else {
-                    return identifier.startsWith("task_block") ? "§cВы достигли максимальный уровень" : "";
+                if(arg.equalsIgnoreCase("upgrade")) {
+                    level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
+                    task = TaskAPI.TaskManager.getTask(level + 1, "upgrades");
+                } else if(arg.equalsIgnoreCase("level")) {
+                    int playerLevel = new PlayerAPI().getLevel(player) + 1;
+                    task = TaskAPI.TaskManager.getTask(playerLevel, "levels");
                 }
+
+                if (task != null && task.getBlocks() != null) {
+                    List<String> loreLines = task.getBlocks().entrySet().stream()
+                            .map(entry -> {
+                                String blockType = entry.getKey();
+                                int playerBlockCount = new PlayerAPI().getDataBlock(new PlayerAPI().getId(player), blockType);
+                                int requiredBlockCount = entry.getValue();
+
+                                String status = (playerBlockCount >= requiredBlockCount) ? "§a✔" : "§c✘";
+
+                                return "§f" + blockType + "§7: §e" + playerBlockCount + "§7/§f" + requiredBlockCount + " " + status;
+                            })
+                            .collect(Collectors.toList());
+
+                    loreBuilder.append(String.join("\n", loreLines));
+                } else loreBuilder.append("§cВы достигли максимальный уровень");
+            }
+
+            return loreBuilder.toString();
+        }
+
+        if (identifier.startsWith("money")) {
+            String[] parts = identifier.split("_");
+
+            if (parts.length == 2) {
+                String arg = parts[1];
+                int level = 0;
+                TaskConfiguration task = null;
+
+                if (arg.equalsIgnoreCase("upgrade")) {
+                    level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
+                    task = TaskAPI.TaskManager.getTask(level + 1, "upgrades");
+                } else if (arg.equalsIgnoreCase("level")) {
+                    int playerLevel = new PlayerAPI().getLevel(player) + 1;
+                    task = TaskAPI.TaskManager.getTask(playerLevel, "levels");
+                }
+
+                if (task != null && task.getMoney() != null) {
+                    BigDecimal playerMoneyCount = new PlayerAPI().getMoney(player);
+                    BigDecimal requiredMoneyCount = task.getMoney();
+
+                    String status = (playerMoneyCount.compareTo(requiredMoneyCount) >= 0) ? "§a✔" : "§c✘";
+
+                    return "§fДенег§7: §e" + playerMoneyCount + "§7/§f" + requiredMoneyCount + " " + status;
+                } else return "";
             }
         }
         return null;
