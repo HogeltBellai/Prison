@@ -1,5 +1,6 @@
 package ru.hogeltbellai.prison.listener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
