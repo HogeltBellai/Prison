@@ -3,7 +3,9 @@ package ru.hogeltbellai.prison.api.menu;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -184,6 +186,31 @@ public class MenuConfigAPI {
                     }
                 } else {
                     player.sendMessage("Вы достигли максимального уровня!");
+                }
+            }
+        },
+        TELEPORT {
+            @Override
+            public void performAction(Player player, String... arg) {
+                if (arg.length == 6) {
+                    double x = Double.parseDouble(arg[0]);
+                    double y = Double.parseDouble(arg[1]);
+                    double z = Double.parseDouble(arg[2]);
+                    float yaw = Float.parseFloat(arg[3]);
+                    float pitch = Float.parseFloat(arg[4]);
+                    String worldName = arg[5];
+
+                    World world = Bukkit.getWorld(worldName);
+
+                    if (world != null) {
+                        Location location = new Location(world, x, y, z, yaw, pitch);
+                        player.teleport(location);
+                        player.sendMessage("мир " + worldName + " не существует!");
+                    } else {
+                        player.sendMessage("Ошибка: мир " + worldName + " не существует!");
+                    }
+                } else {
+                    player.sendMessage("Ошибка: неверное количество аргументов для телепортации!");
                 }
             }
         };

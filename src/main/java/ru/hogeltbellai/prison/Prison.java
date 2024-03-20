@@ -1,6 +1,9 @@
 package ru.hogeltbellai.prison;
 
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
@@ -27,6 +30,7 @@ public class Prison extends JavaPlugin {
 
     @Getter public static Prison instance;
     @Getter public Database database;
+    @Getter public LuckPerms luckPerms;
 
     ConfigAPI config;
 
@@ -47,6 +51,7 @@ public class Prison extends JavaPlugin {
 
         new SQLFileReader().saveFile("prison");
 
+        getLuckPerms();
         initializeDatabase();
 
         new PrisonPlaceholder().register();
@@ -88,6 +93,13 @@ public class Prison extends JavaPlugin {
     private void readSQLFileReader() {
         for (String sqlCommand : new SQLFileReader().readerFile("prison")) {
             getDatabase().query(sqlCommand);
+        }
+    }
+
+    public void getLuckPerms() {
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider != null) {
+            luckPerms = provider.getProvider();
         }
     }
 }

@@ -71,21 +71,28 @@ public class MineAPI {
 
     public void fillMine(String name) {
         ConfigurationSection mineSection = config.getConfig().getConfigurationSection(name);
+        if (mineSection == null) {
+            return;
+        }
         Location pos1 = LocationAPI.deserializeLocation(mineSection.getString("pos1"));
         Location pos2 = LocationAPI.deserializeLocation(mineSection.getString("pos2"));
 
+        if (pos1 == null || pos2 == null || pos1.getWorld() == null) {
+            return;
+        }
+
+        World world = pos1.getWorld();
         List<String> blockChances = mineSection.getStringList("blockChances");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player == null) {
+                continue;
+            }
             Location playerLocation = player.getLocation();
             if (inMinePlayer(player, name)) {
                 int highestY = Math.max(pos1.getBlockY(), pos2.getBlockY());
                 if (playerLocation.getY() < highestY) {
-                    float originalYaw = player.getLocation().getYaw();
-                    float originalPitch = player.getLocation().getPitch();
-
-                    Location newLocation = new Location(pos1.getWorld(), playerLocation.getX(), highestY + 1, playerLocation.getZ(), originalYaw, originalPitch);
-                    player.teleport(newLocation);
+                    player.teleport(new Location(pos1.getWorld(), playerLocation.getX(), highestY + 1, playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch()));
                 }
             }
         }
@@ -94,11 +101,15 @@ public class MineAPI {
         for (int x = Math.min(pos1.getBlockX(), pos2.getBlockX()); x <= Math.max(pos1.getBlockX(), pos2.getBlockX()); x++) {
             for (int y = Math.min(pos1.getBlockY(), pos2.getBlockY()); y <= Math.max(pos1.getBlockY(), pos2.getBlockY()); y++) {
                 for (int z = Math.min(pos1.getBlockZ(), pos2.getBlockZ()); z <= Math.max(pos1.getBlockZ(), pos2.getBlockZ()); z++) {
-                    Location blockLocation = new Location(pos1.getWorld(), x, y, z);
-                    Block block = blockLocation.getBlock();
-                    String randomBlock = getRandomBlock(blockChances, random);
-                    if (randomBlock != null) {
-                        setBlockInNativeWorld(block.getWorld(), x, y, z, Material.valueOf(randomBlock));
+                    if (world.isChunkLoaded(x >> 4, z >> 4)) {
+                        String randomBlock = getRandomBlock(blockChances, random);
+                        if (randomBlock != null) {
+                            try {
+                                setBlockInNativeWorld(world, x, y, z, Material.valueOf(randomBlock));
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }

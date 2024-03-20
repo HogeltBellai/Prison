@@ -62,10 +62,6 @@
           <id>placeholderapi</id>
           <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
       </repository>
-      <repository>
-          <id>codeMC</id>
-          <url>https://repo.codemc.io/repository/maven-public/</url>
-      </repository>
   </repositories>
 
   <dependencies>
@@ -98,6 +94,12 @@
           <groupId>me.clip</groupId>
           <artifactId>placeholderapi</artifactId>
           <version>LATEST</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.luckperms</groupId>
+          <artifactId>api</artifactId>
+          <version>5.4</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
