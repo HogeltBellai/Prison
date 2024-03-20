@@ -12,6 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import ru.hogeltbellai.prison.Prison;
+import ru.hogeltbellai.prison.utils.ChatManager;
 import ru.hogeltbellai.prison.utils.InventoryManager;
 
 public class PlayerListener implements Listener {
@@ -37,33 +38,17 @@ public class PlayerListener implements Listener {
         InventoryManager.restoreItemsOnRespawn(p);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
 
         if (message.startsWith("!")) {
-            broadcastGlobalMessage(player, message.substring(1));
+            new ChatManager().broadcastGlobalMessage(player, message.substring(1));
         } else {
-            broadcastLocalMessage(player, message);
+            new ChatManager().broadcastLocalMessage(player, message);
         }
         event.setCancelled(true);
-    }
-
-    private void broadcastGlobalMessage(Player sender, String message) {
-        String prefix = Prison.getInstance().getLuckPerms().getGroupManager().getGroup(Prison.getInstance().getLuckPerms().getUserManager().getUser(sender.getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix();
-        String formattedMessage = Prison.getInstance().getConfig().getString("chat.globalformat").replace("%player%", sender.getName()).replace("%group%", prefix).replace("%message%", message).replace("&", "§");
-        Bukkit.broadcastMessage(formattedMessage);
-    }
-
-    private void broadcastLocalMessage(Player sender, String message) {
-        String prefix = Prison.getInstance().getLuckPerms().getGroupManager().getGroup(Prison.getInstance().getLuckPerms().getUserManager().getUser(sender.getUniqueId()).getPrimaryGroup()).getCachedData().getMetaData().getPrefix();
-        String formattedMessage = Prison.getInstance().getConfig().getString("chat.localformat").replace("%player%", sender.getName()).replace("%group%", prefix).replace("%message%", message).replace("&", "§");
-        for (Player recipient : Bukkit.getOnlinePlayers()) {
-            if (recipient.getLocation().distance(sender.getLocation()) <= Prison.getInstance().getConfig().getInt("chat.radius")) {
-                recipient.sendMessage(formattedMessage);
-            }
-        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

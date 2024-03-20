@@ -30,7 +30,7 @@ public class Prison extends JavaPlugin {
 
     @Getter public static Prison instance;
     @Getter public Database database;
-    @Getter public LuckPerms luckPerms;
+    @Getter public LuckPerms luckPermsAPI;
 
     ConfigAPI config;
 
@@ -99,7 +99,7 @@ public class Prison extends JavaPlugin {
     public void getLuckPerms() {
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
-            luckPerms = provider.getProvider();
+            luckPermsAPI = provider.getProvider();
         }
     }
 }
