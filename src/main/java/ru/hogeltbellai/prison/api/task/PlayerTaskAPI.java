@@ -1,4 +1,4 @@
-package ru.hogeltbellai.prison.api.newtask;
+package ru.hogeltbellai.prison.api.task;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TaskAPI {
+public class PlayerTaskAPI {
 
     public void loadConfig(String nameConfig) {
         ConfigAPI config = new ConfigAPI(nameConfig);
@@ -17,12 +17,11 @@ public class TaskAPI {
 
         if (taskSection != null) {
             for (String key : taskSection.getKeys(false)) {
-                int level = Integer.parseInt(key);
-                ConfigurationSection levelSection = taskSection.getConfigurationSection(key);
-
-                if (levelSection != null) {
-                    TaskConfiguration task = parseTask(levelSection, nameConfig);
-                    TaskAPI.TaskManager.addTask(level, task, nameConfig);
+                ConfigurationSection taskConfigSection = taskSection.getConfigurationSection(key);
+                TaskConfiguration task = parseTask(taskConfigSection, nameConfig);
+                if (task != null) {
+                    int level = Integer.parseInt(key);
+                    PlayerTaskAPI.TaskManager.addTask(level, task, nameConfig);
                 }
             }
         }

@@ -5,7 +5,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
 import ru.hogeltbellai.prison.api.mine.MineAPI;
-import ru.hogeltbellai.prison.api.newtask.TaskAPI;
+import ru.hogeltbellai.prison.api.task.ItemTaskAPI;
+import ru.hogeltbellai.prison.api.task.PlayerTaskAPI;
 import ru.hogeltbellai.prison.commands.Help_Command;
 import ru.hogeltbellai.prison.commands.LevelUP_Command;
 import ru.hogeltbellai.prison.commands.Shop_Command;
@@ -41,8 +42,8 @@ public class Prison extends JavaPlugin {
         new ConfigAPI("blocks");
         new ConfigAPI("upgrades");
 
-        new TaskAPI().loadConfig("levels");
-        new TaskAPI().loadConfig("upgrades");
+        new PlayerTaskAPI().loadConfig("levels");
+        new ItemTaskAPI().loadConfig("upgrades");
 
         new SQLFileReader().saveFile("prison");
 

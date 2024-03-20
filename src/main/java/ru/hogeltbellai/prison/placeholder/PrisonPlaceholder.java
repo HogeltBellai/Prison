@@ -4,8 +4,9 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
-import ru.hogeltbellai.prison.api.newtask.TaskAPI;
-import ru.hogeltbellai.prison.api.newtask.TaskConfiguration;
+import ru.hogeltbellai.prison.api.task.ItemTaskAPI;
+import ru.hogeltbellai.prison.api.task.PlayerTaskAPI;
+import ru.hogeltbellai.prison.api.task.TaskConfiguration;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
@@ -63,10 +64,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
 
                 if(arg.equalsIgnoreCase("upgrade")) {
                     level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
-                    task = TaskAPI.TaskManager.getTask(level + 1, "upgrades");
+                    task = ItemTaskAPI.ItemTaskManager.getItemTask(ItemsConfigAPI.getItemNameByMaterial(player.getInventory().getItemInMainHand()), level + 1);
                 } else if(arg.equalsIgnoreCase("level")) {
                     int playerLevel = new PlayerAPI().getLevel(player) + 1;
-                    task = TaskAPI.TaskManager.getTask(playerLevel, "levels");
+                    task = PlayerTaskAPI.TaskManager.getTask(playerLevel, "levels");
                 }
 
                 if (task != null && task.getBlocks() != null) {
@@ -99,10 +100,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
 
                 if (arg.equalsIgnoreCase("upgrade")) {
                     level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand());
-                    task = TaskAPI.TaskManager.getTask(level + 1, "upgrades");
+                    task = ItemTaskAPI.ItemTaskManager.getItemTask(ItemsConfigAPI.getItemNameByMaterial(player.getInventory().getItemInMainHand()), level + 1);
                 } else if (arg.equalsIgnoreCase("level")) {
                     int playerLevel = new PlayerAPI().getLevel(player) + 1;
-                    task = TaskAPI.TaskManager.getTask(playerLevel, "levels");
+                    task = PlayerTaskAPI.TaskManager.getTask(playerLevel, "levels");
                 }
 
                 if (task != null && task.getMoney() != null) {

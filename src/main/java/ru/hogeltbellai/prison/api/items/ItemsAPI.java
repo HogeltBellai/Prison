@@ -62,7 +62,6 @@ public class ItemsAPI {
             ItemMeta meta = itemsAPI.item.getItemMeta();
             assert meta != null;
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
             meta.setUnbreakable(true);
             itemsAPI.item.setItemMeta(meta);

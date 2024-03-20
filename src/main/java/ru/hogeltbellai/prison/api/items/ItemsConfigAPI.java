@@ -53,7 +53,7 @@ public class ItemsConfigAPI {
 
     public static String getItemNameByMaterial(ItemStack itemStack) {
         for (String itemName : config.getConfig().getKeys(false)) {
-            if (Objects.requireNonNull(config.getConfig().getString(itemName + ".material")).equalsIgnoreCase(itemStack.getType().toString()) && Objects.requireNonNull(config.getConfig().getString(itemName + ".displayName")).replace('&', '§').equalsIgnoreCase(Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName())) {
+            if (Objects.requireNonNull(config.getConfig().getString(itemName + ".material")).equalsIgnoreCase(itemStack.getType().toString()) && Objects.requireNonNull(config.getConfig().getString(itemName + ".display_name")).replace('&', '§').equalsIgnoreCase(Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName())) {
                 return itemName;
             }
         }

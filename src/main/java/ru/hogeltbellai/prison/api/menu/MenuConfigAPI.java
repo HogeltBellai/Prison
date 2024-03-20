@@ -6,17 +6,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsAPI;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.message.MessageAPI;
-import ru.hogeltbellai.prison.api.newtask.TaskAPI;
-import ru.hogeltbellai.prison.api.newtask.TaskConfiguration;
+import ru.hogeltbellai.prison.api.task.ItemTaskAPI;
+import ru.hogeltbellai.prison.api.task.PlayerTaskAPI;
+import ru.hogeltbellai.prison.api.task.TaskConfiguration;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class MenuConfigAPI {
 
@@ -95,10 +100,10 @@ public class MenuConfigAPI {
             @Override
             public void performAction(Player player, String... arg) {
                 int level = new PlayerAPI().getLevel(player) + 1;
-                TaskConfiguration currentTask = TaskAPI.TaskManager.getTask(level, "levels");
+                TaskConfiguration currentTask = PlayerTaskAPI.TaskManager.getTask(level, "levels");
 
                 if (currentTask != null) {
-                    if (TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), currentTask)) {
+                    if (PlayerTaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), currentTask)) {
                         new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
                         new PlayerAPI().setMoney(player, "-", currentTask.getMoney());
                     } else {
@@ -137,16 +142,48 @@ public class MenuConfigAPI {
         UPGRADE_ITEM {
             @Override
             public void performAction(Player player, String... arg) {
-                int level = ItemsConfigAPI.getLevelFromLore(player.getInventory().getItemInMainHand()) + 1;
-                if(TaskAPI.TaskManager.getTask(level, "upgrades") != null) {
-                    if (TaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), TaskAPI.TaskManager.getTask(level, "upgrades"))) {
-                        ItemsConfigAPI.setLevelToLore(player.getInventory().getItemInMainHand(), level);
-                        new PlayerAPI().setMoney(player, "-", TaskAPI.TaskManager.getTask(level, "upgrades").getMoney());
+                ItemStack itemInHand = player.getInventory().getItemInMainHand();
+                String itemName = ItemsConfigAPI.getItemNameByMaterial(itemInHand);
+
+                if (itemName != null) {
+                    int itemLevel = ItemsConfigAPI.getLevelFromLore(itemInHand) + 1;
+                    TaskConfiguration itemTask = ItemTaskAPI.ItemTaskManager.getItemTask(itemName, itemLevel);
+
+                    if (itemTask != null) {
+                        if (PlayerTaskAPI.TaskManager.isTaskCompleted(player, new PlayerAPI().getId(player), itemTask)) {
+                            ItemsConfigAPI.setLevelToLore(itemInHand, itemLevel);
+                            new PlayerAPI().setMoney(player, "-", itemTask.getMoney());
+
+                            if (itemTask.getMaterial() != null) {
+                                itemInHand.setType(Material.valueOf(itemTask.getMaterial()));
+                            }
+
+                            ItemMeta itemMeta = itemInHand.getItemMeta();
+                            if (itemMeta != null && itemTask.getDisplayName() != null) {
+                                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemTask.getDisplayName()));
+                                itemInHand.setItemMeta(itemMeta);
+                            }
+
+                            if (itemTask.getEnchantments() != null) {
+                                for (Map.Entry<String, Object> entry : itemTask.getEnchantments().entrySet()) {
+                                    String enchantKey = entry.getKey();
+                                    Enchantment enchantment = Enchantment.getByName(enchantKey);
+                                    if (enchantment != null && entry.getValue() instanceof Integer) {
+                                        int level = (int) entry.getValue();
+                                        itemInHand.addEnchantment(enchantment, level);
+                                    }
+                                }
+                            } else {
+                                itemInHand.getEnchantments().keySet().forEach(itemInHand::removeEnchantment);
+                            }
+                        } else {
+                            player.sendMessage("Не все условия выполнены для улучшения предмета " + itemName + " на уровень " + itemLevel);
+                        }
                     } else {
-                        player.sendMessage("Не все условия выполнены!" + level);
+                        player.sendMessage("Нет задания для улучшения предмета " + itemName + " на уровень " + itemLevel);
                     }
                 } else {
-                    player.sendMessage("Вы достигли максимального уровня!" + level);
+                    player.sendMessage("Вы достигли максимального уровня!");
                 }
             }
         };
@@ -160,5 +197,11 @@ public class MenuConfigAPI {
         }
 
         public abstract void performAction(Player player, String... arg);
+
+        public static void removeEnchantments(ItemStack item){
+            for(Map.Entry<Enchantment, Integer> e : item.getEnchantments().entrySet()){
+                item.removeEnchantment(e.getKey());
+            }
+        }
     }
 }
