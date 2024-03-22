@@ -68,7 +68,8 @@ public class Prison extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
 
-        new MineAPI().new MineFillTask().runTaskTimer(this, 0, getConfig().getInt("prison.mine.time") * 1200L);
+        MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask();
+        mineFillTask.runTaskTimer(this, 0, getConfig().getInt("prison.mine.time") * 1200L);
     }
 
     @Override

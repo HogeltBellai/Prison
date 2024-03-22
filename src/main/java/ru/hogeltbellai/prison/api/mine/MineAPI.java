@@ -126,8 +126,16 @@ public class MineAPI {
 
         for (String blockChance : blockChances) {
             String[] parts = blockChance.split(":");
+            if (parts.length != 2) {
+                continue;
+            }
             String blockName = parts[0];
-            int weight = Integer.parseInt(parts[1]);
+            int weight;
+            try {
+                weight = Integer.parseInt(parts[1]);
+            } catch (NumberFormatException e) {
+                continue;
+            }
             weightedBlocks.add(new WeightedBlock(blockName, weight));
             totalWeight += weight;
         }
@@ -150,10 +158,12 @@ public class MineAPI {
     }
 
     public void setBlockInNativeWorld(World world, int x, int y, int z, Material material) {
-        net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
-        BlockPosition bp = new BlockPosition(x, y, z);
-        IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
-        nmsWorld.setTypeAndData(bp, ibd, 3);
+        Bukkit.getScheduler().runTask(Prison.getInstance(), () -> {
+            net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
+            BlockPosition bp = new BlockPosition(x, y, z);
+            IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
+            nmsWorld.setTypeAndData(bp, ibd, 3);
+        });
     }
 
     public boolean inMinePlayer(Player player, String name) {
@@ -210,7 +220,7 @@ public class MineAPI {
         }
     }
 
-    public class MineFillTask extends BukkitRunnable {
+    public static class MineFillTask extends BukkitRunnable {
 
         @Override
         public void run() {

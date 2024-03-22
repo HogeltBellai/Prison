@@ -13,6 +13,12 @@ prison:
   mine:
     time: 1 # Время пополнения шахт
 
+# Настройка чата
+chat:
+  radius: 50
+  globalformat: "&eG &7[%group%&7] %player% &8[%prison_fraction%&8]&f: %message%"
+  localformat: "&6L &7[%group%&7] %player% &8[%prison_fraction%&8]&f: %message%"
+
 # Настройка сообщений
 messages:
   money:
