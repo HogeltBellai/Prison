@@ -11,7 +11,10 @@
 %prison_block% - Блоки игрока
 %prison_money% - Денег у игрока
 %prison_fraction% - Фракция игрока
-%prison_task_money_(название конфигурации уровня)% - Взять задания для чего либо
+%prison_block_level% - Задания для повышения уровня (Блоки)
+%prison_money_level% - Задания для повышения уровня (Деньги)
+%prison_block_upgrade% - Задания для повышения уровня (Блоки)
+%prison_money_upgrade% - Задания для повышения уровня (Деньги)
 ```
 
 # API use
