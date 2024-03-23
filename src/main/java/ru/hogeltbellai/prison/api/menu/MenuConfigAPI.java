@@ -209,7 +209,7 @@ public class MenuConfigAPI {
                                     player.teleport(location);
                                     player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
                                 } else {
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport"));
+                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
                                 }
                             } else {
                                 player.teleport(location);
