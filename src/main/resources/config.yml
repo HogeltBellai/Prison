@@ -28,3 +28,5 @@ messages:
   sell:
     sell_block: 'Вы продали блоки и получили %money%'
     sell_error: 'У вас нечего продавать'
+  teleport: 'Вы были перемещены...'
+  level_teleport: 'Вам не хватает уровня'

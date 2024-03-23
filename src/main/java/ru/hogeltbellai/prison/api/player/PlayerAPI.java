@@ -54,6 +54,11 @@ public class PlayerAPI implements PlayerInterface {
     }
 
     @Override
+    public double getBooster(Player player) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT booster FROM users WHERE name = ?", Integer.class, player.getName());
+    }
+
+    @Override
     public void setBlockData(int id, String type, int block) {
         int rowCount = Prison.getInstance().getDatabase().queryUpdate("UPDATE users_blocks SET amount = amount + ? WHERE player_id = ? AND block_type = ?", block, id, type);
 
@@ -62,6 +67,7 @@ public class PlayerAPI implements PlayerInterface {
         }
     }
 
+    @Override
     public int getDataBlock(int id, String blockType) {
         Integer result = Prison.getInstance().getDatabase().getVaule("SELECT amount FROM users_blocks WHERE player_id = ? AND block_type = ?", Integer.class, id, blockType);
 
@@ -71,4 +77,5 @@ public class PlayerAPI implements PlayerInterface {
             return 0;
         }
     }
+
 }

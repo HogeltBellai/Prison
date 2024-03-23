@@ -23,7 +23,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         if(!player.hasPlayedBefore()) {
-            Prison.getInstance().getDatabase().query("INSERT INTO users (name, level, blocks, money, fraction) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE name = ?)", player.getName(), 1, 0, 0, null, player.getName());
+            Prison.getInstance().getDatabase().query("INSERT INTO users (name, level, blocks, money, fraction, booster) SELECT ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE name = ?)", player.getName(), 1, 0, 0, null, 1, player.getName());
         }
     }
 

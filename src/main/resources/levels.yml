@@ -2,11 +2,19 @@
 tasks:
   2:
     blocks:
-      DIRT: 100
-      SAND: 50
+      DIRT: 1000
+      SAND: 100
+      GRAVEL: 50
     money: 5
   3:
     blocks:
-      DIRT: 1000
-      SAND: 500
+      DIRT: 2500
+      SAND: 1000
+      GRAVEL: 100
+    money: 10
+  4:
+    blocks:
+      DIRT: 2500
+      SAND: 1000
+      GRAVEL: 100
     money: 10

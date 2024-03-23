@@ -70,8 +70,15 @@ public class SellListener implements Listener {
         if (totalPrice > 0) {
             String formattedPrice = df.format(totalPrice).replace(",", ".");
             BigDecimal money = new BigDecimal(formattedPrice);
-            new PlayerAPI().setMoney(player, "+", money);
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.sell.sell_block").replace("%money%", formattedPrice)));
+            double booster = new PlayerAPI().getBooster(player);
+            BigDecimal totalMoney = money.multiply(BigDecimal.valueOf(booster));
+            String formattedTotalMoney = df.format(totalMoney);
+
+            new PlayerAPI().setMoney(player, "+", totalMoney);
+
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.sell.sell_block")
+                    .replace("%money%", formattedTotalMoney)
+                    .replace("%booster%", String.valueOf(booster))));
         }
     }
 }

@@ -89,7 +89,7 @@ public class MineAPI {
                 continue;
             }
             Location playerLocation = player.getLocation();
-            if (inMinePlayer(player, name)) {
+            if (inMinePlayer(playerLocation, pos1, pos2)) {
                 int highestY = Math.max(pos1.getBlockY(), pos2.getBlockY());
                 if (playerLocation.getY() < highestY) {
                     player.teleport(new Location(pos1.getWorld(), playerLocation.getX(), highestY + 1, playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch()));
@@ -105,7 +105,13 @@ public class MineAPI {
                         String randomBlock = getRandomBlock(blockChances, random);
                         if (randomBlock != null) {
                             try {
-                                setBlockInNativeWorld(world, x, y, z, Material.valueOf(randomBlock));
+                                try {
+                                    Material material = Material.valueOf(randomBlock);
+                                    setBlockInNativeWorld(world, x, y, z, material);
+                                } catch (IllegalArgumentException e) {
+                                    Bukkit.getLogger().warning("Некорректное имя материала: " + randomBlock);
+                                    e.printStackTrace();
+                                }
                             } catch (IllegalArgumentException e) {
                                 e.printStackTrace();
                             }
@@ -158,19 +164,17 @@ public class MineAPI {
     }
 
     public void setBlockInNativeWorld(World world, int x, int y, int z, Material material) {
-        Bukkit.getScheduler().runTask(Prison.getInstance(), () -> {
-            net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
-            BlockPosition bp = new BlockPosition(x, y, z);
-            IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
-            nmsWorld.setTypeAndData(bp, ibd, 3);
-        });
+        net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
+        BlockPosition bp = new BlockPosition(x, y, z);
+        IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
+        nmsWorld.setTypeAndData(bp, ibd, 3);
     }
 
-    public boolean inMinePlayer(Player player, String name) {
-        ConfigurationSection mineSection = config.getConfig().getConfigurationSection(name);
-        Location pos1 = LocationAPI.deserializeLocation(mineSection.getString("pos1"));
-        Location pos2 = LocationAPI.deserializeLocation(mineSection.getString("pos2"));
-        Location playerLocation = player.getLocation();
+    public boolean inMinePlayer(Location location, Location pos1, Location pos2) {
+        World world = pos1.getWorld();
+        if (world == null || !location.getWorld().equals(world)) {
+            return false;
+        }
 
         double minX = Math.min(pos1.getX(), pos2.getX()) - 1;
         double maxX = Math.max(pos1.getX(), pos2.getX()) + 1;
@@ -179,13 +183,13 @@ public class MineAPI {
         double minZ = Math.min(pos1.getZ(), pos2.getZ()) - 1;
         double maxZ = Math.max(pos1.getZ(), pos2.getZ()) + 1;
 
-        if (playerLocation.getWorld().equals(pos1.getWorld()) &&
-                playerLocation.getX() >= minX && playerLocation.getX() <= maxX &&
-                playerLocation.getY() >= minY && playerLocation.getY() <= maxY &&
-                playerLocation.getZ() >= minZ && playerLocation.getZ() <= maxZ) {
-            return true;
-        }
-        return false;
+        double playerX = location.getX();
+        double playerY = location.getY();
+        double playerZ = location.getZ();
+
+        return playerX >= minX && playerX <= maxX &&
+                playerY >= minY && playerY <= maxY &&
+                playerZ >= minZ && playerZ <= maxZ;
     }
 
     public boolean inMineBlock(Block b, String name) {

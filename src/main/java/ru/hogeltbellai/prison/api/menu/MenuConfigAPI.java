@@ -22,6 +22,7 @@ import ru.hogeltbellai.prison.api.task.TaskConfiguration;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +56,8 @@ public class MenuConfigAPI {
                         ItemsAPI item = new ItemsAPI.Builder().material(material).displayName(displayName).lore(loreBuilder.toString().split("\n")).hideFlags().build();
 
                         MenuAPI.setMenuItem(player, title, slot, item.getItem(), () -> {
-                            executeAction(player, itemSection);
                             player.closeInventory();
+                            executeAction(player, itemSection);
                         });
                     }
                 }
@@ -83,14 +84,10 @@ public class MenuConfigAPI {
                 for (String event : events) {
                     String[] eventParts = event.split(":");
                     String actionType = eventParts[0];
-                    String arg = eventParts[1];
+                    String[] args = Arrays.copyOfRange(eventParts, 1, eventParts.length);
                     ActionType action = ActionType.getAction(actionType);
                     if (action != null) {
-                        if(eventParts.length == 2) {
-                            action.performAction(player, arg);
-                        } else if(eventParts.length == 3) {
-                            action.performAction(player, arg, eventParts[2]);
-                        }
+                        action.performAction(player, args);
                     }
                 }
             }
@@ -192,25 +189,50 @@ public class MenuConfigAPI {
         TELEPORT {
             @Override
             public void performAction(Player player, String... arg) {
-                if (arg.length == 6) {
-                    double x = Double.parseDouble(arg[0]);
-                    double y = Double.parseDouble(arg[1]);
-                    double z = Double.parseDouble(arg[2]);
-                    float yaw = Float.parseFloat(arg[3]);
-                    float pitch = Float.parseFloat(arg[4]);
-                    String worldName = arg[5];
+                if (arg.length >= 6) {
+                    try {
+                        double x = Double.parseDouble(arg[0]);
+                        double y = Double.parseDouble(arg[1]);
+                        double z = Double.parseDouble(arg[2]);
+                        float yaw = Float.parseFloat(arg[3]);
+                        float pitch = Float.parseFloat(arg[4]);
+                        String worldName = arg[5];
 
-                    World world = Bukkit.getWorld(worldName);
+                        World world = Bukkit.getWorld(worldName);
 
-                    if (world != null) {
-                        Location location = new Location(world, x, y, z, yaw, pitch);
-                        player.teleport(location);
-                        player.sendMessage("мир " + worldName + " не существует!");
-                    } else {
-                        player.sendMessage("Ошибка: мир " + worldName + " не существует!");
+                        if (world != null) {
+                            Location location = new Location(world, x, y, z, yaw, pitch);
+                            if (arg.length == 7) {
+                                int requiredLevel = Integer.parseInt(arg[6]);
+                                int playerLevel = new PlayerAPI().getLevel(player);
+                                if (playerLevel >= requiredLevel) {
+                                    player.teleport(location);
+                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                } else {
+                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport"));
+                                }
+                            } else {
+                                player.teleport(location);
+                                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                            }
+                        } else {
+                            player.sendMessage("Ошибка: мир " + worldName + " не существует!");
+                        }
+                    } catch (NumberFormatException e) {
+                        player.sendMessage("Ошибка: неверный формат аргументов для телепортации!");
                     }
                 } else {
                     player.sendMessage("Ошибка: неверное количество аргументов для телепортации!");
+                }
+            }
+        },
+        OPEN_MENU {
+            @Override
+            public void performAction(Player player, String... arg) {
+                if (arg.length > 0) {
+                    MenuConfigAPI.createMenuConfig(player, arg[0]);
+                } else {
+                    player.sendMessage("Ошибка: не указано имя меню для открытия!");
                 }
             }
         };

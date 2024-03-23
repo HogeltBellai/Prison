@@ -25,6 +25,8 @@ public interface PlayerInterface {
 
     public String getFraction(Player player);
 
+    public double getBooster(Player player);
+
     // users_blocks
     public void setBlockData(int id, String type, int block);
 

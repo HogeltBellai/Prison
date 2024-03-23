@@ -9,8 +9,11 @@ softdepend:
   - PlaceholderAPI
 
 commands:
+  menu:
+  mine:
   levelup:
   upgrade:
   shop:
   help:
+  food:
   prison:
