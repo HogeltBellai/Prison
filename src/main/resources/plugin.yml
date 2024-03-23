@@ -16,4 +16,5 @@ commands:
   shop:
   help:
   food:
+  spawn:
   prison:

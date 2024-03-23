@@ -59,6 +59,8 @@ public class Prison extends JavaPlugin {
         new Shop_Command();
         new Help_Command();
 
+        new Spawn_Command();
+
         new Admin_Command();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
