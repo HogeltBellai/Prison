@@ -226,6 +226,27 @@ public class MenuConfigAPI {
                 }
             }
         },
+        SELECT_FRACTION {
+            @Override
+            public void performAction(Player player, String... arg) {
+                if (arg.length == 2) {
+                    int requiredLevel = Integer.parseInt(arg[1]);
+                    int playerLevel = new PlayerAPI().getLevel(player);
+                    if (playerLevel >= requiredLevel) {
+                        if(new PlayerAPI().getFraction(player) == null || new PlayerAPI().getFraction(player) == "") {
+                            new PlayerAPI().setFraction(player, arg[0]);
+                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.fraction.join").replace("%fraction%", new PlayerAPI().getFraction(player)));
+                        } else {
+                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.fraction.has_fraction"));
+                        }
+                    } else {
+                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.fraction.level").replace("%level_required%", String.valueOf(requiredLevel)));
+                    }
+                } else {
+                    player.sendMessage("Ошибка: не указано имя фракции для открытия!");
+                }
+            }
+        },
         OPEN_MENU {
             @Override
             public void performAction(Player player, String... arg) {

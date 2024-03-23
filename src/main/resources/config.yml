@@ -31,4 +31,8 @@ messages:
     sell_block: 'Вы продали блоки и получили %money%'
     sell_error: 'У вас нечего продавать'
   teleport: 'Вы были перемещены...'
-  level_teleport: 'Вам не хватает уровня (Доступ от %level_required% уровня)'
+  level_teleport: 'Вам не хватает уровня для телепорта (Доступ от %level_required% уровня)'
+  fraction:
+    join: 'Вы успешно вступили во фракцию %fraction%'
+    has_fraction: 'У вас уже имеется фракция'
+    level: 'Вам не хватает уровня для вступления (Доступ от %level_required% уровня)'

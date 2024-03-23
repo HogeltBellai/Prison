@@ -13,8 +13,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import ru.hogeltbellai.prison.Prison;
+import ru.hogeltbellai.prison.api.location.LocationAPI;
 import ru.hogeltbellai.prison.utils.ChatManager;
 import ru.hogeltbellai.prison.utils.InventoryManager;
+
+import java.util.Objects;
 
 public class PlayerListener implements Listener {
 
@@ -24,6 +27,9 @@ public class PlayerListener implements Listener {
 
         if(!player.hasPlayedBefore()) {
             Prison.getInstance().getDatabase().query("INSERT INTO users (name, level, blocks, money, fraction, booster) SELECT ?, ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM users WHERE name = ?)", player.getName(), 1, 0, 0, null, 1, player.getName());
+
+            String teleportLocation = Prison.getInstance().getConfig().getString("prison.spawn");
+            player.teleport(Objects.requireNonNull(LocationAPI.deserializeLocationPlayer(teleportLocation)));
         }
     }
 
@@ -37,6 +43,9 @@ public class PlayerListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
         InventoryManager.restoreItemsOnRespawn(p);
+
+        String teleportLocation = Prison.getInstance().getConfig().getString("prison.spawn");
+        event.setRespawnLocation(Objects.requireNonNull(LocationAPI.deserializeLocationPlayer(teleportLocation)));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

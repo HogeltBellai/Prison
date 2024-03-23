@@ -17,4 +17,5 @@ commands:
   help:
   food:
   spawn:
+  fraction:
   prison:

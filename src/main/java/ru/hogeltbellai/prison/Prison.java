@@ -58,6 +58,7 @@ public class Prison extends JavaPlugin {
         new Upgrade_Command();
         new Shop_Command();
         new Help_Command();
+        new Fraction_Command();
 
         new Spawn_Command();
 
@@ -69,8 +70,9 @@ public class Prison extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
 
-        MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask();
-        mineFillTask.runTaskTimer(this, 0, getConfig().getInt("prison.mine.time") * 1200L);
+        MineAPI mineAPI = new MineAPI();
+        MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask(mineAPI);
+        mineFillTask.runTaskTimerAsynchronously(Prison.getInstance(), 0, Prison.getInstance().getConfig().getInt("prison.mine.time") * 1200L);
     }
 
     @Override
