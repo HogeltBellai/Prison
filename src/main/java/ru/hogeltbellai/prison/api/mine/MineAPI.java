@@ -226,11 +226,16 @@ public class MineAPI {
 
     public static class MineFillTask extends BukkitRunnable {
 
+        private final MineAPI mineAPI;
+
+        public MineFillTask(MineAPI mineAPI) {
+            this.mineAPI = mineAPI;
+        }
+
         @Override
         public void run() {
-            Bukkit.getScheduler().runTaskTimer(Prison.getInstance(), () -> {
-                new MineAPI().getAllMines().forEach(mine -> new MineAPI().fillMine(mine.getName()));
-            }, 0, Prison.getInstance().getConfig().getInt("prison.mine.time") * 1200L);
+            List<Mine> mines = mineAPI.getAllMines();
+            mines.forEach(mine -> mineAPI.fillMine(mine.getName()));
         }
     }
 }
