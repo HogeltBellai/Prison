@@ -48,7 +48,7 @@ public class PlayerListener implements Listener {
         event.setRespawnLocation(Objects.requireNonNull(LocationAPI.deserializeLocationPlayer(teleportLocation)));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();

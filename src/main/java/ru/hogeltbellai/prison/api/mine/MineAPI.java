@@ -84,42 +84,43 @@ public class MineAPI {
         World world = pos1.getWorld();
         List<String> blockChances = mineSection.getStringList("blockChances");
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player == null) {
-                continue;
-            }
-            Location playerLocation = player.getLocation();
-            if (inMinePlayer(playerLocation, pos1, pos2)) {
-                int highestY = Math.max(pos1.getBlockY(), pos2.getBlockY());
-                if (playerLocation.getY() < highestY) {
-                    player.teleport(new Location(pos1.getWorld(), playerLocation.getX(), highestY + 1, playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch()));
+        Bukkit.getScheduler().runTask(Prison.getInstance(), () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player != null && inMinePlayer(player.getLocation(), pos1, pos2)) {
+                    int highestY = Math.max(pos1.getBlockY(), pos2.getBlockY());
+                    Location playerLocation = player.getLocation();
+                    if (playerLocation.getY() < highestY) {
+                        player.teleport(new Location(pos1.getWorld(), playerLocation.getX(), highestY + 1, playerLocation.getZ(), playerLocation.getYaw(), playerLocation.getPitch()));
+                    }
                 }
             }
-        }
 
-        Random random = new Random();
-        for (int x = Math.min(pos1.getBlockX(), pos2.getBlockX()); x <= Math.max(pos1.getBlockX(), pos2.getBlockX()); x++) {
-            for (int y = Math.min(pos1.getBlockY(), pos2.getBlockY()); y <= Math.max(pos1.getBlockY(), pos2.getBlockY()); y++) {
-                for (int z = Math.min(pos1.getBlockZ(), pos2.getBlockZ()); z <= Math.max(pos1.getBlockZ(), pos2.getBlockZ()); z++) {
-                    if (world.isChunkLoaded(x >> 4, z >> 4)) {
-                        String randomBlock = getRandomBlock(blockChances, random);
-                        if (randomBlock != null) {
-                            try {
-                                try {
-                                    Material material = Material.valueOf(randomBlock);
-                                    setBlockInNativeWorld(world, x, y, z, material);
-                                } catch (IllegalArgumentException e) {
-                                    Bukkit.getLogger().warning("Некорректное имя материала: " + randomBlock);
-                                    e.printStackTrace();
+            // После телепортации игроков запускаем асинхронную задачу для установки блоков
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Random random = new Random();
+                    for (int x = Math.min(pos1.getBlockX(), pos2.getBlockX()); x <= Math.max(pos1.getBlockX(), pos2.getBlockX()); x++) {
+                        for (int y = Math.min(pos1.getBlockY(), pos2.getBlockY()); y <= Math.max(pos1.getBlockY(), pos2.getBlockY()); y++) {
+                            for (int z = Math.min(pos1.getBlockZ(), pos2.getBlockZ()); z <= Math.max(pos1.getBlockZ(), pos2.getBlockZ()); z++) {
+                                if (world.isChunkLoaded(x >> 4, z >> 4)) {
+                                    String randomBlock = getRandomBlock(blockChances, random);
+                                    if (randomBlock != null) {
+                                        try {
+                                            Material material = Material.valueOf(randomBlock);
+                                            setBlockInNativeWorld(world, x, y, z, material);
+                                        } catch (IllegalArgumentException e) {
+                                            Bukkit.getLogger().warning("Некорректное имя материала: " + randomBlock);
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
                 }
-            }
-        }
+            }.runTaskAsynchronously(Prison.getInstance());
+        });
     }
 
     private String getRandomBlock(List<String> blockChances, Random random) {
@@ -164,10 +165,17 @@ public class MineAPI {
     }
 
     public void setBlockInNativeWorld(World world, int x, int y, int z, Material material) {
-        net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
-        BlockPosition bp = new BlockPosition(x, y, z);
-        IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
-        nmsWorld.setTypeAndData(bp, ibd, 3);
+        BukkitRunnable runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                net.minecraft.server.v1_16_R3.World nmsWorld = ((CraftWorld) world).getHandle();
+                BlockPosition bp = new BlockPosition(x, y, z);
+                IBlockData ibd = CraftMagicNumbers.getBlock(material).getBlockData();
+                nmsWorld.setTypeAndData(bp, ibd, 3);
+            }
+        };
+
+        runnable.runTask(Prison.getInstance());
     }
 
     public boolean inMinePlayer(Location location, Location pos1, Location pos2) {
