@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.hogeltbellai.prison.api.mine.MineAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
+import ru.hogeltbellai.prison.utils.CaseManager;
 
 public class BlockListener implements Listener {
 
@@ -25,6 +26,8 @@ public class BlockListener implements Listener {
                     player.getInventory().addItem(new ItemStack(event.getBlock().getType()));
                     event.setDropItems(false);
                     event.setExpToDrop(0);
+
+                    CaseManager.dropKey(player);
                 }
             }
         });

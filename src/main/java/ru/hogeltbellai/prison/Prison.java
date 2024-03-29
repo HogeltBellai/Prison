@@ -18,6 +18,7 @@ import ru.hogeltbellai.prison.listener.SellListener;
 import ru.hogeltbellai.prison.placeholder.PrisonPlaceholder;
 import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
+import ru.hogeltbellai.prison.utils.CaseManager;
 
 /**
  * Programming by HogeltBellai
@@ -28,6 +29,7 @@ public class Prison extends JavaPlugin {
     @Getter public static Prison instance;
     @Getter public Database database;
     @Getter public LuckPerms luckPermsAPI;
+    @Getter public CaseManager caseManager;
 
     ConfigAPI config;
 
@@ -36,6 +38,9 @@ public class Prison extends JavaPlugin {
         instance = this;
 
         config = new ConfigAPI("config");
+        caseManager = new CaseManager();
+        MineAPI mineAPI = new MineAPI();
+
         new ConfigAPI("levels");
         new ConfigAPI("menus");
         new ConfigAPI("items");
@@ -52,6 +57,7 @@ public class Prison extends JavaPlugin {
         initializeDatabase();
 
         new PrisonPlaceholder().register();
+
         new Menu_Command();
         new Mine_Command();
         new LevelUP_Command();
@@ -59,18 +65,14 @@ public class Prison extends JavaPlugin {
         new Shop_Command();
         new Help_Command();
         new Fraction_Command();
-
         new Spawn_Command();
-
         new Admin_Command();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new SellListener(), this);
-
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
 
-        MineAPI mineAPI = new MineAPI();
         MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask(mineAPI);
         mineFillTask.runTaskTimerAsynchronously(Prison.getInstance(), 0, Prison.getInstance().getConfig().getInt("prison.mine.time") * 1200L);
     }

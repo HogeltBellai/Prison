@@ -106,10 +106,10 @@ public class MenuConfigAPI {
                         new PlayerAPI().setLevel(player, "+", Integer.parseInt(arg[0]));
                         new PlayerAPI().setMoney(player, "-", currentTask.getMoney());
                     } else {
-                        player.sendMessage("Не все условия выполнены!");
+                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.levelup.no_task"));
                     }
                 } else {
-                    player.sendMessage("Вы достигли максимального уровня!");
+                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.levelup.max_level"));
                 }
             }
         },
@@ -176,13 +176,11 @@ public class MenuConfigAPI {
                                 itemInHand.getEnchantments().keySet().forEach(itemInHand::removeEnchantment);
                             }
                         } else {
-                            player.sendMessage("Не все условия выполнены для улучшения предмета " + itemName + " на уровень " + itemLevel);
+                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.upgrade.no_task"));
                         }
-                    } else {
-                        player.sendMessage("Нет задания для улучшения предмета " + itemName + " на уровень " + itemLevel);
                     }
                 } else {
-                    player.sendMessage("Вы достигли максимального уровня!");
+                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.upgrade.max_level"));
                 }
             }
         },
@@ -202,18 +200,42 @@ public class MenuConfigAPI {
 
                         if (world != null) {
                             Location location = new Location(world, x, y, z, yaw, pitch);
-                            if (arg.length == 7) {
-                                int requiredLevel = Integer.parseInt(arg[6]);
-                                int playerLevel = new PlayerAPI().getLevel(player);
-                                if (playerLevel >= requiredLevel) {
-                                    player.teleport(location);
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                            if (arg.length >= 7 && arg[6].equalsIgnoreCase("podval")) {
+                                if (arg.length >= 8) {
+                                    int requiredLevel = Integer.parseInt(arg[7]);
+                                    int playerLevel = new PlayerAPI().getLevel(player);
+                                    if (new PlayerAPI().hasPodval(player)) {
+                                        if (playerLevel >= requiredLevel) {
+                                            player.teleport(location);
+                                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                        } else {
+                                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
+                                        }
+                                    } else {
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
+                                    }
                                 } else {
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
+                                    if (new PlayerAPI().hasPodval(player)) {
+                                        player.teleport(location);
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                    } else {
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
+                                    }
                                 }
                             } else {
-                                player.teleport(location);
-                                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                if (arg.length == 7) {
+                                    int requiredLevel = Integer.parseInt(arg[6]);
+                                    int playerLevel = new PlayerAPI().getLevel(player);
+                                    if (playerLevel >= requiredLevel) {
+                                        player.teleport(location);
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                    } else {
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
+                                    }
+                                } else {
+                                    player.teleport(location);
+                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                }
                             }
                         } else {
                             player.sendMessage("Ошибка: мир " + worldName + " не существует!");

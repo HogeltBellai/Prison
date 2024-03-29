@@ -53,6 +53,11 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
             return fraction != null ? fraction : "Нет";
         }
 
+        if (identifier.equals("booster")) {
+            double booster = new PlayerAPI().getBooster(player);
+            return booster != 1 ? "x" + booster : "Нет";
+        }
+
         if (identifier.startsWith("block")) {
             String[] parts = identifier.split("_");
             StringBuilder loreBuilder = new StringBuilder();

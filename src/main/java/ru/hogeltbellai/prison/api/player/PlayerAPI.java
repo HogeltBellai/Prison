@@ -34,6 +34,11 @@ public class PlayerAPI implements PlayerInterface {
     }
 
     @Override
+    public void setPodval(Player player, int podval) {
+        Prison.getInstance().getDatabase().queryUpdate("UPDATE users SET has_podval = has_podval + ? WHERE name = ?", podval, player.getName());
+    }
+
+    @Override
     public int getLevel(Player player) {
         return Prison.getInstance().getDatabase().getVaule("SELECT level FROM users WHERE name = ?", Integer.class, player.getName());
     }
@@ -56,6 +61,12 @@ public class PlayerAPI implements PlayerInterface {
     @Override
     public double getBooster(Player player) {
         return Prison.getInstance().getDatabase().getVaule("SELECT booster FROM users WHERE name = ?", Integer.class, player.getName());
+    }
+
+    @Override
+    public boolean hasPodval(Player player) {
+        Integer hasPodvalInt = Prison.getInstance().getDatabase().getVaule("SELECT has_podval FROM users WHERE name = ?", Integer.class, player.getName());
+        return hasPodvalInt != null && hasPodvalInt == 1;
     }
 
     @Override

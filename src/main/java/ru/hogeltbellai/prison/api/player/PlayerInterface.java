@@ -17,6 +17,8 @@ public interface PlayerInterface {
 
     public void setFraction(Player player, String fraction);
 
+    public void setPodval(Player player, int podval);
+
     public int getLevel(Player player);
 
     public BigDecimal getMoney(Player player);
@@ -26,6 +28,8 @@ public interface PlayerInterface {
     public String getFraction(Player player);
 
     public double getBooster(Player player);
+
+    public boolean hasPodval(Player player);
 
     // users_blocks
     public void setBlockData(int id, String type, int block);

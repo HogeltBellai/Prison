@@ -15,6 +15,23 @@ prison:
   mine:
     time: 1 # Время пополнения шахт
 
+# Настройка кейсов
+cases:
+  test:
+    world: world
+    x: 3
+    y: 71
+    z: -23
+    loot:
+      spade1: 20
+      pickaxe1: 20
+      sword1: 20
+      head1: 10
+      body1: 10
+      leg1: 10
+      boot1: 10
+      beef1: 60
+
 # Настройка чата
 chat:
   radius: 50
@@ -32,7 +49,17 @@ messages:
     sell_error: 'У вас нечего продавать'
   teleport: 'Вы были перемещены...'
   level_teleport: 'Вам не хватает уровня для телепорта (Доступ от %level_required% уровня)'
+  podval_teleport: 'У вас нет доступа к Подвалу'
   fraction:
     join: 'Вы успешно вступили во фракцию %fraction%'
     has_fraction: 'У вас уже имеется фракция'
     level: 'Вам не хватает уровня для вступления (Доступ от %level_required% уровня)'
+  case:
+    no_item: 'Держите ключ в руке'
+    key_drop: 'Вам выпал ключ'
+  levelup:
+    no_task: 'Вы незакончили все задания'
+    max_level: 'Вы достигли максимального уровня'
+  upgrade:
+    no_task: 'Вы незакончили все задания'
+    max_level: 'Вы достигли максимального уровня'
