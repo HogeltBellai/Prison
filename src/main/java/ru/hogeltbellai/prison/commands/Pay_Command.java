@@ -6,9 +6,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
-import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
+import ru.hogeltbellai.prison.api.config.ConfigAPI;
+import ru.hogeltbellai.prison.api.message.MessageAPI;
+import ru.hogeltbellai.prison.api.player.PlayerAPI;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class Pay_Command implements CommandExecutor {
+
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public Pay_Command() {
         Prison.getInstance().getCommand("pay").setExecutor(this);
@@ -19,13 +26,13 @@ public class Pay_Command implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length != 2) {
-            sender.sendMessage("Использование: /pay <игрок> <сумма>");
+            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.help"));
             return true;
         }
 
         Player target = player.getServer().getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage("Игрок " + args[0] + " не найден.");
+            sender.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.target_isonline").replace("%target%", target.getName()));
             return true;
         }
 
@@ -33,17 +40,38 @@ public class Pay_Command implements CommandExecutor {
         try {
             amount = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage("Неправильный формат суммы.");
+            sender.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.format"));
             return true;
         }
 
         if (amount <= 0) {
-            sender.sendMessage("Сумма должна быть положительным числом.");
+            sender.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.format"));
             return true;
         }
 
-        sender.sendMessage("Вы успешно перевели " + amount + " виртуальных денег игроку " + target.getName() + ".");
-        target.sendMessage("Вам было переведено " + amount + " виртуальных денег от игрока " + player.getName() + ".");
+        double commission = amount * Prison.getInstance().getConfig().getDouble("prison.pay.commission");
+        double totalAmount = amount - commission;
+
+        if(player.getName().equals(target.getName())) {
+            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.no_self"));
+            return true;
+        }
+
+        double minimum = Prison.getInstance().getConfig().getDouble("prison.pay.minimum");
+
+        if (BigDecimal.valueOf(amount).compareTo(BigDecimal.valueOf(minimum)) >= 0) {
+            if (new PlayerAPI().getMoney(player).compareTo(BigDecimal.valueOf(amount)) >= 0) {
+                new PlayerAPI().setMoney(player, "-", BigDecimal.valueOf(amount));
+                new PlayerAPI().setMoney(target, "+", BigDecimal.valueOf(totalAmount));
+
+                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.send_money").replace("%target%", target.getName()).replace("%amount%", decimalFormat.format(totalAmount)));
+                target.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.get_money").replace("%player%", player.getName()).replace("%amount%", decimalFormat.format(totalAmount)));
+            } else {
+                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.money.no_money"));
+            }
+        } else {
+            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pay.minimum").replace("%amount%", decimalFormat.format(minimum)));
+        }
         return true;
     }
 }

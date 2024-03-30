@@ -58,6 +58,7 @@ public class Prison extends JavaPlugin {
 
         new PrisonPlaceholder().register();
 
+        new Pay_Command();
         new Menu_Command();
         new Mine_Command();
         new LevelUP_Command();

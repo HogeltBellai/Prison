@@ -10,6 +10,7 @@ softdepend:
   - LootNetwork
 
 commands:
+  pay:
   menu:
   mine:
   levelup:
