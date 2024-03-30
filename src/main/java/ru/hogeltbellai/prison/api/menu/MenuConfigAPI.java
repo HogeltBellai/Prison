@@ -61,29 +61,22 @@ public class MenuConfigAPI {
     private static void executeAction(Player player, ConfigurationSection itemSection) {
         if (itemSection.isConfigurationSection("action")) {
             ConfigurationSection actionSection = itemSection.getConfigurationSection("action");
-            assert actionSection != null;
+            if (actionSection == null) return;
+
             List<String> commands = actionSection.getStringList("command");
             List<String> messages = actionSection.getStringList("message");
             List<String> events = actionSection.getStringList("event");
-            if (!commands.isEmpty() || !events.isEmpty() || !messages.isEmpty()) {
-                for (String command : commands) {
-                    command = command.replace("%user%", player.getName());
-                    Bukkit.dispatchCommand(player, command);
-                }
-                for (String message : messages) {
-                    message = message.replace("&", "§");
-                    player.sendMessage(message);
-                }
-                for (String event : events) {
-                    String[] eventParts = event.split(":");
+
+            commands.forEach(command -> Bukkit.dispatchCommand(player, command.replace("%user%", player.getName())));
+            messages.forEach(message -> player.sendMessage(message.replace("&", "§")));
+            events.forEach(event -> {
+                String[] eventParts = event.split(":");
+                if (eventParts.length > 1) {
                     String actionType = eventParts[0];
                     String[] args = Arrays.copyOfRange(eventParts, 1, eventParts.length);
-                    ActionType action = ActionType.getAction(actionType);
-                    if (action != null) {
-                        action.performAction(player, args);
-                    }
+                    ActionType.getAction(actionType).performAction(player, args);
                 }
-            }
+            });
         }
     }
 
@@ -152,7 +145,6 @@ public class MenuConfigAPI {
         }
 
         // Доп. методы, для enum
-
         private static void upgradeItem(Player player, String... arg) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             String itemName = ItemsConfigAPI.getItemNameByMaterial(itemInHand);
