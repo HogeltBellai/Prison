@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        //CustomPet.removePetForPlayer(player);
+        CustomPet.removePetForPlayer(player);
     }
 
     @EventHandler

@@ -202,4 +202,12 @@ public class CustomPet {
             ProtocolLibrary.getProtocolManager().sendServerPacket(player, destroyPacket);
         }
     }
+
+    public static void removePetForPlayer(Player player) {
+        CustomPet pet = playerPets.get(player);
+        if (pet != null) {
+            pet.removePet();
+            playerPets.remove(player);
+        }
+    }
 }

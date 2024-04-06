@@ -99,6 +99,10 @@ public class Prison extends JavaPlugin {
         if(config.getConfig().getBoolean("storage.enable")) {
             getDatabase().disconnect();
         }
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            CustomPet.removePetForPlayer(player);
+        }
     }
 
     public void initializeDatabase() {
