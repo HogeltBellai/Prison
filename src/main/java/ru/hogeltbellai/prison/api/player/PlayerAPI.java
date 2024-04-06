@@ -34,6 +34,16 @@ public class PlayerAPI implements PlayerInterface {
     }
 
     @Override
+    public void setAutosell(Player player, int bool) {
+        Prison.getInstance().getDatabase().queryUpdate("UPDATE users SET autosell = ? WHERE name = ?", bool, player.getName());
+    }
+
+    @Override
+    public void setPet(Player player, String pet) {
+        Prison.getInstance().getDatabase().query("UPDATE users SET pet = ? WHERE name = ?", pet, player.getName());
+    }
+
+    @Override
     public void setPodval(Player player, int podval) {
         Prison.getInstance().getDatabase().queryUpdate("UPDATE users SET has_podval = has_podval + ? WHERE name = ?", podval, player.getName());
     }
@@ -61,6 +71,17 @@ public class PlayerAPI implements PlayerInterface {
     @Override
     public double getBooster(Player player) {
         return Prison.getInstance().getDatabase().getVaule("SELECT booster FROM users WHERE name = ?", Integer.class, player.getName());
+    }
+
+    @Override
+    public boolean hasAutosell(Player player) {
+        Integer autosellInt = Prison.getInstance().getDatabase().getVaule("SELECT autosell FROM users WHERE name = ?", Integer.class, player.getName());
+        return autosellInt != null && autosellInt == 1;
+    }
+
+    @Override
+    public String getPet(Player player) {
+        return Prison.getInstance().getDatabase().getVaule("SELECT pet FROM users WHERE name = ?", String.class, player.getName());
     }
 
     @Override
