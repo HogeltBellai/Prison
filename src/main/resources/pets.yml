@@ -1,0 +1,9 @@
+# Создание и настройка питомцев
+pets:
+  pet1:
+    name: "Пет"
+    head_texture: "eyJ0aW1lc3RhbXAiOjE2NDUwODIwNjA3NTAsInByb2ZpbGVJZCI6IjJmMTk3MDhkMmE3MTQ4M2JjODg0ZTQ4NjFlNmZlMjUwIiwicHJvZmlsZU5hbWUiOiJXaW5kb3dzIEhlbGwiLCJ0ZXh0dXJlcyI6e30sImF1ZCI6WyJodHRwczovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQva2E1MmJiYzQ2MTE5NmQyNTU3OTc5NTNmOGI2ZGY4YzZjNjM4Y2UxOTM2ODc4MTBiZGQ1YTI4NzYyZjliY2U1NyJdfQ=="
+    walkSpeed: 0.3
+    potions:
+      - SPEED:1200:1
+      - INVISIBILITY:600:0

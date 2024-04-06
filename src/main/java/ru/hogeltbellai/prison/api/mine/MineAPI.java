@@ -30,31 +30,12 @@ public class MineAPI {
         }
 
         ConfigurationSection mineSection = config.getConfig().createSection(name);
-        mineSection.set("displayName", "Тестовая шахта");
         mineSection.set("pos1", LocationAPI.serializeLocation(pos1));
         mineSection.set("pos2", LocationAPI.serializeLocation(pos2));
-        mineSection.set("level", 1);
-        mineSection.set("teleport", LocationAPI.serializeLocationPlayer(player.getLocation()));
         mineSection.set("blockChances", blockChances);
         config.saveConfig();
         fillMine(name);
         return true;
-    }
-
-    public Location getTeleportLocation(String name) {
-        ConfigurationSection mineSection = config.getConfig().getConfigurationSection(name);
-        String teleportLocation = mineSection.getString("teleport");
-        return LocationAPI.deserializeLocationPlayer(teleportLocation);
-    }
-
-    public String getName(String name) {
-        ConfigurationSection mineSection = config.getConfig().getConfigurationSection(name);
-        return mineSection.getString("displayName").replace("&", "§");
-    }
-
-    public int getLevel(String name) {
-        ConfigurationSection mineSection = config.getConfig().getConfigurationSection(name);
-        return mineSection.getInt("level");
     }
 
     public List<Mine> getAllMines() {
@@ -95,7 +76,6 @@ public class MineAPI {
                 }
             }
 
-            // После телепортации игроков запускаем асинхронную задачу для установки блоков
             new BukkitRunnable() {
                 @Override
                 public void run() {

@@ -17,7 +17,11 @@ public interface PlayerInterface {
 
     public void setFraction(Player player, String fraction);
 
-    public void setPodval(Player player, int podval);
+    public void setAutosell(Player player, int bool);
+
+    public void setPet(Player player, String pet);
+
+    public void setPodval(Player player, int bool);
 
     public int getLevel(Player player);
 
@@ -28,6 +32,10 @@ public interface PlayerInterface {
     public String getFraction(Player player);
 
     public double getBooster(Player player);
+
+    public boolean hasAutosell(Player player);
+
+    public String getPet(Player player);
 
     public boolean hasPodval(Player player);
 

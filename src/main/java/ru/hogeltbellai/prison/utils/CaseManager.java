@@ -77,6 +77,23 @@ public class CaseManager {
         }
     }
 
+    public static String getCaseName(Location location) {
+        ConfigurationSection casesSection = Prison.getInstance().getConfig().getConfigurationSection("cases");
+        if (casesSection != null) {
+            Set<String> caseNames = casesSection.getKeys(false);
+            for (String caseName : caseNames) {
+                Location caseLocation = getLocationFromConfig(caseName);
+                if (caseLocation != null && caseLocation.getWorld().equals(location.getWorld()) &&
+                        caseLocation.getBlockX() == location.getBlockX() &&
+                        caseLocation.getBlockY() == location.getBlockY() &&
+                        caseLocation.getBlockZ() == location.getBlockZ()) {
+                    return caseName;
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean isCase(Location location) {
         ConfigurationSection casesSection = Prison.getInstance().getConfig().getConfigurationSection("cases");
         if (casesSection != null) {
@@ -94,7 +111,7 @@ public class CaseManager {
         return false;
     }
 
-    public Location getLocationFromConfig(String caseName) {
+    public static Location getLocationFromConfig(String caseName) {
         String world = Prison.getInstance().getConfig().getString("cases." + caseName + ".world");
         int x = Prison.getInstance().getConfig().getInt("cases." + caseName + ".x");
         int y = Prison.getInstance().getConfig().getInt("cases." + caseName + ".y");
