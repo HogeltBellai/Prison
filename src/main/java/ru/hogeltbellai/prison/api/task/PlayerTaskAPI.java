@@ -29,9 +29,13 @@ public class PlayerTaskAPI {
 
     private TaskConfiguration parseTask(ConfigurationSection section, String configName) {
         Map<String, Integer> blocks = new HashMap<>();
-        int totalBlocks = section.getInt("blocks");
+        ConfigurationSection blocksSection = section.getConfigurationSection("blocks");
 
-        blocks.put("Блоков", totalBlocks);
+        if (blocksSection != null) {
+            for (String key : blocksSection.getKeys(false)) {
+                blocks.put(key, blocksSection.getInt(key));
+            }
+        }
 
         BigDecimal money = BigDecimal.valueOf(section.getDouble("money"));
 
@@ -55,15 +59,18 @@ public class PlayerTaskAPI {
             return null;
         }
 
-        public static boolean isTaskCompleted(Player player, TaskConfiguration task) {
+        public static boolean isTaskCompleted(Player player, int playerId, TaskConfiguration task) {
             if (task == null) return false;
 
             Map<String, Integer> requiredBlocks = task.getBlocks();
-            int requiredTotalBlocks = requiredBlocks.getOrDefault("Блоков", 0);
 
-            int actualTotalBlocks = new PlayerAPI().getBlock(player);
-            if (actualTotalBlocks < requiredTotalBlocks) {
-                return false;
+            for (Map.Entry<String, Integer> entry : requiredBlocks.entrySet()) {
+                String blockType = entry.getKey();
+                int requiredAmount = entry.getValue();
+                int actualAmount = new PlayerAPI().getDataBlock(playerId, blockType);
+                if (actualAmount < requiredAmount) {
+                    return false;
+                }
             }
 
             BigDecimal requiredMoney = task.getMoney();

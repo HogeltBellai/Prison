@@ -1,9 +1,7 @@
 package ru.hogeltbellai.prison.api.task;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
-import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -77,31 +75,6 @@ public class ItemTaskAPI {
                 return itemTasks.get(level);
             }
             return null;
-        }
-
-        public static boolean isTaskCompleted(Player player, int playerId, TaskConfiguration task) {
-            if (task == null) return false;
-
-            Map<String, Integer> requiredBlocks = task.getBlocks();
-
-            for (Map.Entry<String, Integer> entry : requiredBlocks.entrySet()) {
-                String blockType = entry.getKey();
-                int requiredAmount = entry.getValue();
-                int actualAmount = new PlayerAPI().getDataBlock(playerId, blockType);
-                if (actualAmount < requiredAmount) {
-                    return false;
-                }
-            }
-
-            BigDecimal requiredMoney = task.getMoney();
-            if (requiredMoney != null) {
-                BigDecimal actualMoney = new PlayerAPI().getMoney(player);
-                if (actualMoney.compareTo(requiredMoney) < 0) {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
