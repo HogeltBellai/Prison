@@ -1,27 +1,18 @@
 package ru.hogeltbellai.prison;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
-import ru.hogeltbellai.prison.api.entity.CustomPet;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
 import ru.hogeltbellai.prison.api.mine.MineAPI;
-import ru.hogeltbellai.prison.api.pet.Pet;
-import ru.hogeltbellai.prison.api.pet.PetAPI;
-import ru.hogeltbellai.prison.api.player.PlayerAPI;
 import ru.hogeltbellai.prison.api.task.ItemTaskAPI;
 import ru.hogeltbellai.prison.api.task.PlayerTaskAPI;
 import ru.hogeltbellai.prison.commands.*;
 import ru.hogeltbellai.prison.commands.admin.Admin_Command;
 import ru.hogeltbellai.prison.listener.BlockListener;
-import ru.hogeltbellai.prison.listener.PetListener;
 import ru.hogeltbellai.prison.listener.PlayerListener;
 import ru.hogeltbellai.prison.listener.SellListener;
 import ru.hogeltbellai.prison.placeholder.PrisonPlaceholder;
@@ -39,8 +30,6 @@ public class Prison extends JavaPlugin {
     @Getter public Database database;
     @Getter public LuckPerms luckPermsAPI;
     @Getter public CaseManager caseManager;
-    @Getter public Pet pet;
-    @Getter public ProtocolManager protocolManager;
 
     ConfigAPI config;
 
@@ -50,8 +39,6 @@ public class Prison extends JavaPlugin {
 
         config = new ConfigAPI("config");
         caseManager = new CaseManager();
-        pet = new Pet();
-        protocolManager = ProtocolLibrary.getProtocolManager();
         MineAPI mineAPI = new MineAPI();
 
         new ConfigAPI("levels");
@@ -60,7 +47,6 @@ public class Prison extends JavaPlugin {
         new ConfigAPI("mines");
         new ConfigAPI("blocks");
         new ConfigAPI("upgrades");
-        new ConfigAPI("pets");
 
         new PlayerTaskAPI().loadConfig("levels");
         new ItemTaskAPI().loadConfig("upgrades");
@@ -86,8 +72,6 @@ public class Prison extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new SellListener(), this);
-        getServer().getPluginManager().registerEvents(new PetListener(), this);
-
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
 
         MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask(mineAPI);
