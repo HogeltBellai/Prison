@@ -28,10 +28,6 @@ public class BlockListener implements Listener {
                     event.setExpToDrop(0);
 
                     CaseManager.dropKey(player);
-
-                    if(new PlayerAPI().hasAutosell(player)) {
-                        new SellListener().sellBlocks(player);
-                    }
                 }
             }
         });

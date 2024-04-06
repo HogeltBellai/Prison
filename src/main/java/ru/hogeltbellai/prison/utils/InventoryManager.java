@@ -3,14 +3,8 @@ package ru.hogeltbellai.prison.utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import ru.hogeltbellai.prison.Prison;
-import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
-import ru.hogeltbellai.prison.api.message.MessageAPI;
-import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class InventoryManager {
@@ -64,21 +58,6 @@ public class InventoryManager {
                     }
                 }
             }
-        }
-    }
-
-
-    public static void dropMoney(Player killer, Player player, double percentage) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        BigDecimal balance = new PlayerAPI().getMoney(player);
-        BigDecimal amountToDrop = balance.multiply(BigDecimal.valueOf(percentage / 100));
-
-        if (balance.compareTo(BigDecimal.valueOf(10)) >= 0) {
-            if (killer != null && killer instanceof Player) {
-                new PlayerAPI().setMoney(killer, "+", amountToDrop);
-            }
-            new PlayerAPI().setMoney(player, "-", amountToDrop);
-            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.death.player_killed").replace("%amount%", decimalFormat.format(amountToDrop)));
         }
     }
 }
