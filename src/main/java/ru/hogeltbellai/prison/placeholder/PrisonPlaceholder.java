@@ -58,6 +58,11 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
             return booster != 1 ? "x" + booster : "Нет";
         }
 
+        if (identifier.equals("autosell")) {
+            boolean booster = new PlayerAPI().hasAutosell(player);
+            return booster ? "§aВключено" : "§cВыключено";
+        }
+
         if (identifier.startsWith("block")) {
             String[] parts = identifier.split("_");
             StringBuilder loreBuilder = new StringBuilder();
@@ -79,12 +84,17 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
                     List<String> loreLines = task.getBlocks().entrySet().stream()
                             .map(entry -> {
                                 String blockType = entry.getKey();
+                                int playerBlockAll = new PlayerAPI().getBlock(player);
                                 int playerBlockCount = new PlayerAPI().getDataBlock(new PlayerAPI().getId(player), blockType);
                                 int requiredBlockCount = entry.getValue();
 
-                                String status = (playerBlockCount >= requiredBlockCount) ? "§a✔" : "§c✘";
-
-                                return "§f" + blockType + "§7: §e" + playerBlockCount + "§7/§f" + requiredBlockCount + " " + status;
+                                if(blockType.equalsIgnoreCase("Блоков")) {
+                                    String status = (playerBlockAll >= requiredBlockCount) ? "§a✔" : "§c✘";
+                                    return "§f" + blockType + "§7: §e" + playerBlockAll + "§7/§f" + requiredBlockCount + " " + status;
+                                } else {
+                                    String status = (playerBlockCount >= requiredBlockCount) ? "§a✔" : "§c✘";
+                                    return "§f" + blockType + "§7: §e" + playerBlockCount + "§7/§f" + requiredBlockCount + " " + status;
+                                }
                             })
                             .collect(Collectors.toList());
 
