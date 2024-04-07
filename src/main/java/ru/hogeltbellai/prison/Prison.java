@@ -3,6 +3,7 @@ package ru.hogeltbellai.prison;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import lombok.Getter;
+import lombok.Setter;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -29,6 +30,8 @@ import ru.hogeltbellai.prison.storage.Database;
 import ru.hogeltbellai.prison.storage.SQLFileReader;
 import ru.hogeltbellai.prison.utils.CaseManager;
 
+import java.util.HashMap;
+
 /**
  * Programming by HogeltBellai
  * Site: hogeltbellai.ru
@@ -41,6 +44,7 @@ public class Prison extends JavaPlugin {
     @Getter public CaseManager caseManager;
     @Getter public Pet pet;
     @Getter public ProtocolManager protocolManager;
+    @Getter public HashMap<Player, Long> lastTeleports;
 
     ConfigAPI config;
 

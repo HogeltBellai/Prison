@@ -27,7 +27,9 @@ import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -272,13 +274,16 @@ public class MenuConfigAPI {
                     float pitch = Float.parseFloat(arg[4]);
                     String worldName = arg[5];
                     int delay = Prison.getInstance().getConfig().getInt("prison.teleport.delay");
-                    int timeLast = new PlayerAPI().getLastTeleport(player)-delay;
+                    long timeLast;
+
+                    timeLast = Prison.getInstance().getLastTeleports().containsKey(player) ? Prison.getInstance().getLastTeleports().get(player) : 0;
 
                     World world = Bukkit.getWorld(worldName);
 
                     if (world != null) {
                         if (timeLast <= 0) {
-                            new PlayerAPI().setLastTeleport(player);
+                            long time = System.currentTimeMillis();
+                            Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                             Location location = new Location(world, x, y, z, yaw, pitch);
                             if (arg.length >= 7 && arg[6].equalsIgnoreCase("podval")) {
                                 if (arg.length >= 8) {
