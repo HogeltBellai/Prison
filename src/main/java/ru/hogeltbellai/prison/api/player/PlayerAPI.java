@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import ru.hogeltbellai.prison.Prison;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 
 public class PlayerAPI implements PlayerInterface {
 
@@ -102,6 +101,22 @@ public class PlayerAPI implements PlayerInterface {
     @Override
     public int getDataBlock(int id, String blockType) {
         Integer result = Prison.getInstance().getDatabase().getVaule("SELECT amount FROM users_blocks WHERE player_id = ? AND block_type = ?", Integer.class, id, blockType);
+
+        if (result != null) {
+            return result;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public void setLastTeleport(Player player) {
+        Prison.getInstance().getDatabase().query("UPDATE users SET last_teleport = ? WHERE name = ?", java.time.LocalDateTime.now(), player.getName());
+    }
+
+    @Override
+    public int getLastTeleport(Player player) {
+        Integer result = Prison.getInstance().getDatabase().getVaule("SELECT last_teleport FROM users WHERE name = ?", Integer.class, player.getName());
 
         if (result != null) {
             return result;

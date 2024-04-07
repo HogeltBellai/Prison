@@ -43,4 +43,8 @@ public interface PlayerInterface {
     public void setBlockData(int id, String type, int block);
 
     public int getDataBlock(int id, String blockType);
+
+    void setLastTeleport(Player player);
+
+    int getLastTeleport(Player player);
 }

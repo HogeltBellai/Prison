@@ -271,16 +271,41 @@ public class MenuConfigAPI {
                     float yaw = Float.parseFloat(arg[3]);
                     float pitch = Float.parseFloat(arg[4]);
                     String worldName = arg[5];
+                    int delay = Prison.getInstance().getConfig().getInt("prison.teleport.delay");
+                    int timeLast = new PlayerAPI().getLastTeleport(player)-delay;
 
                     World world = Bukkit.getWorld(worldName);
 
                     if (world != null) {
-                        Location location = new Location(world, x, y, z, yaw, pitch);
-                        if (arg.length >= 7 && arg[6].equalsIgnoreCase("podval")) {
-                            if (arg.length >= 8) {
-                                int requiredLevel = Integer.parseInt(arg[7]);
-                                int playerLevel = new PlayerAPI().getLevel(player);
-                                if (new PlayerAPI().hasPodval(player)) {
+                        if (timeLast <= 0) {
+                            new PlayerAPI().setLastTeleport(player);
+                            Location location = new Location(world, x, y, z, yaw, pitch);
+                            if (arg.length >= 7 && arg[6].equalsIgnoreCase("podval")) {
+                                if (arg.length >= 8) {
+                                    int requiredLevel = Integer.parseInt(arg[7]);
+                                    int playerLevel = new PlayerAPI().getLevel(player);
+                                    if (new PlayerAPI().hasPodval(player)) {
+                                        if (playerLevel >= requiredLevel) {
+                                            player.teleport(location);
+                                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                        } else {
+                                            player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
+                                        }
+                                    } else {
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
+                                    }
+                                } else {
+                                    if (new PlayerAPI().hasPodval(player)) {
+                                        player.teleport(location);
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
+                                    } else {
+                                        player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
+                                    }
+                                }
+                            } else {
+                                if (arg.length == 7) {
+                                    int requiredLevel = Integer.parseInt(arg[6]);
+                                    int playerLevel = new PlayerAPI().getLevel(player);
                                     if (playerLevel >= requiredLevel) {
                                         player.teleport(location);
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
@@ -288,30 +313,12 @@ public class MenuConfigAPI {
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
                                     }
                                 } else {
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
-                                }
-                            } else {
-                                if (new PlayerAPI().hasPodval(player)) {
                                     player.teleport(location);
                                     player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
-                                } else {
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
                                 }
                             }
                         } else {
-                            if (arg.length == 7) {
-                                int requiredLevel = Integer.parseInt(arg[6]);
-                                int playerLevel = new PlayerAPI().getLevel(player);
-                                if (playerLevel >= requiredLevel) {
-                                    player.teleport(location);
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
-                                } else {
-                                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
-                                }
-                            } else {
-                                player.teleport(location);
-                                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
-                            }
+                            player.sendMessage("Подождите ещё " + timeLast + " секунд перед телепортацией.");
                         }
                     } else {
                         player.sendMessage("Ошибка: мир " + worldName + " не существует!");

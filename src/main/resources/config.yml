@@ -18,6 +18,8 @@ prison:
   pay:
     commission: 0.05
     minimum: 1
+  teleport:
+    delay: 5
 
 # Настройка кейсов
 cases:
