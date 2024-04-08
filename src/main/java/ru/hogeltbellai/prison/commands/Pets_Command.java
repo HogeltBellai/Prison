@@ -1,16 +1,14 @@
 package ru.hogeltbellai.prison.commands;
 
-import org.bukkit.Bukkit;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +16,9 @@ import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.entity.CustomPet;
-import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
+import ru.hogeltbellai.prison.api.items.ItemsAPI;
+import ru.hogeltbellai.prison.api.menu.MenuAPI;
+import ru.hogeltbellai.prison.api.message.MessageAPI;
 import ru.hogeltbellai.prison.api.pet.PetAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
+@Setter
 public class Pets_Command implements CommandExecutor, Listener {
-    Inventory menu;
-    ArrayList<Integer> pets_slots;
-    ArrayList<Integer> empty_slots;
-    HashMap<Player, ArrayList<String>> pets_cur = new HashMap<>();
+
+    private ArrayList<Integer> petsSlots;
+    private ArrayList<Integer> emptySlots;
+    private HashMap<Player, ArrayList<String>> playerPets = new HashMap<>();
 
     public Pets_Command() {
         Prison.getInstance().getCommand("pets").setExecutor(this);
@@ -38,89 +40,103 @@ public class Pets_Command implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player)) { return true; }
+        if (!(sender instanceof Player)) {
+            return true;
+        }
 
         Player player = (Player) sender;
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             FileConfiguration cfg = new ConfigAPI("pets").getConfig();
-            Integer size = cfg.getInt("menu.size")*9;
-            menu = Bukkit.createInventory(player, size, "Питомцы");
+            int size = cfg.getInt("menu.size") * 9;
+            MenuAPI.createMenu(player, "Питомцы", size);
 
-            String empty_char = cfg.getString("menu.empty_slots.symbol");
-            String pets_char = cfg.getString("menu.pets_slots.symbol");
-            String left_char = cfg.getString("menu.left_slot.symbol");
-            String right_char = cfg.getString("menu.right_slot.symbol");
-            String close_char = cfg.getString("menu.close_slot.symbol");
+            String emptyChar = cfg.getString("menu.empty_slots.symbol");
+            String petsChar = cfg.getString("menu.pets_slots.symbol");
+            String leftChar = cfg.getString("menu.left_slot.symbol");
+            String rightChar = cfg.getString("menu.right_slot.symbol");
+            String closeChar = cfg.getString("menu.close_slot.symbol");
 
-            String empty_item = cfg.getString("menu.empty_slots.item");
-            String left_item = cfg.getString("menu.left_slot.item");
-            String right_item = cfg.getString("menu.right_slot.item");
-            String close_item = cfg.getString("menu.close_slot.item");
+            String emptyItem = cfg.getString("menu.empty_slots.item");
+            //String leftItem = cfg.getString("menu.left_slot.item");
+            //String rightItem = cfg.getString("menu.right_slot.item");
+            //String closeItem = cfg.getString("menu.close_slot.item");
 
-            pets_slots = new ArrayList<>();
-            ArrayList<String> curpets = new ArrayList<>();
-            empty_slots = new ArrayList<>();
-            Integer left_slot = 0;
-            Integer right_slot = 0;
-            Integer close_slot = 0;
-            ArrayList<String> pets = Prison.getInstance().getDatabase().getStringList("SELECT pet FROM users_pets WHERE player_id = ?",  new PlayerAPI().getId(player));
+            petsSlots = new ArrayList<>();
+            ArrayList<String> currentPets = new ArrayList<>();
+            emptySlots = new ArrayList<>();
+            int leftSlot = 0;
+            int rightSlot = 0;
+            int closeSlot = 0;
+            ArrayList<String> pets = Prison.getInstance().getDatabase().getStringList("SELECT pet FROM users_pets WHERE player_id = ?", new PlayerAPI().getId(player));
             List<String> template = cfg.getStringList("menu.template");
+
             for (int j = 0; j < template.size(); j++) {
-                String s = template.get(j);
-                for (int i = 0; i < s.length(); i++) {
-                    if (String.valueOf(s.charAt(i)).equals(pets_char)) { pets_slots.add(9*j+i); }
-                    if (String.valueOf(s.charAt(i)).equals(empty_char)) { empty_slots.add(9*j+i); }
-                    if (String.valueOf(s.charAt(i)).equals(left_char)) { left_slot = 9*j+i; }
-                    if (String.valueOf(s.charAt(i)).equals(right_char)) { right_slot = 9*j+i; }
-                    if (String.valueOf(s.charAt(i)).equals(close_char)) { close_slot = 9*j+i; }
+                String line = template.get(j);
+                for (int i = 0; i < line.length(); i++) {
+                    char c = line.charAt(i);
+                    if (String.valueOf(c).equals(petsChar)) {
+                        petsSlots.add(9 * j + i);
+                    } else if (String.valueOf(c).equals(emptyChar)) {
+                        emptySlots.add(9 * j + i);
+                    } else if (String.valueOf(c).equals(leftChar)) {
+                        leftSlot = 9 * j + i;
+                    } else if (String.valueOf(c).equals(rightChar)) {
+                        rightSlot = 9 * j + i;
+                    } else if (String.valueOf(c).equals(closeChar)) {
+                        closeSlot = 9 * j + i;
+                    }
                 }
             }
-            Integer max = 0;
-            if (pets.size() > pets_slots.size()) { max = pets_slots.size(); } else { max = pets.size(); }
+
+            int max = Math.min(pets.size(), petsSlots.size());
 
             for (int i = 0; i < max; i++) {
-                ItemStack head = new PetAPI(cfg.getConfigurationSection("pets."+pets.get(i))).getHeadItem();
+                ItemStack head = new PetAPI(cfg.getConfigurationSection("pets." + pets.get(i))).getHeadItem();
                 ItemMeta meta = head.getItemMeta();
-                String name = new ChatColorAPI().getColoredString(new PetAPI(cfg.getConfigurationSection("pets."+pets.get(i))).getName()).replace("%player%", player.getName());
+                String name = new ChatColorAPI().getColoredString(new PetAPI(cfg.getConfigurationSection("pets." + pets.get(i))).getName()).replace("%player%", player.getName());
                 meta.setDisplayName(name);
                 ArrayList<String> lore = new ArrayList<>();
 
-                if (new PlayerAPI().getPet(player).equals(pets.get(i))) {
-                    lore.add("Использовано");
+
+                if(new PlayerAPI().getPet(player) != null) {
+                    if (new PlayerAPI().getPet(player).equals(pets.get(i))) {
+                        lore.add("");
+                        lore.add("§a§nВЫБРАНО");
+                    } else {
+                        lore.add("");
+                        lore.add("§7§nНажмите, чтобы призвать");
+                    }
                 } else {
-                    lore.add("Нажмите ПКМ чтобы надеть");
+                    lore.add("");
+                    lore.add("§7§nНажмите, чтобы призвать");
                 }
                 meta.setLore(lore);
                 head.setItemMeta(meta);
-                menu.setItem(pets_slots.get(i), head);
-                curpets.add(pets.get(i));
+                MenuAPI.setMenuItem(player, "Питомцы", petsSlots.get(i), head, () -> {
+                    new PlayerAPI().setPet(player, playerPets.get(player).get(petsSlots.indexOf(MenuAPI.getClickedItem())));
+                    CustomPet.removePetForPlayer(player);
+                    PetAPI petAPI = Prison.getInstance().getPet().loadPetData(new PlayerAPI().getPet(player));
+                    Prison.getInstance().getPet().spawnPet(player, petAPI);
+                    player.closeInventory();
+                    player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pets.spawn").replace("%pet%", new ChatColorAPI().getColoredString(petAPI.getName())));
+                });
+                currentPets.add(pets.get(i));
             }
-            pets_cur.put(player, curpets);
-            for (int i = 0; i < empty_slots.size(); i++) {
-                menu.setItem(empty_slots.get(i), new ItemStack(Material.valueOf(empty_item)));
+            playerPets.put(player, currentPets);
+
+            for (int emptySlot : emptySlots) {
+                MenuAPI.setMenuItem(player, "Питомцы", emptySlot, new ItemStack(Material.valueOf(emptyItem)), () -> { });
             }
-            menu.setItem(left_slot, new ItemStack(Material.valueOf(left_item)));
-            menu.setItem(right_slot, new ItemStack(Material.valueOf(right_item)));
-            menu.setItem(close_slot, new ItemStack(Material.valueOf(close_item)));
-            player.openInventory(menu);
+            MenuAPI.setMenuItem(player, "Питомцы", leftSlot, new ItemStack(Material.valueOf(emptyItem)), () -> { });
+            MenuAPI.setMenuItem(player, "Питомцы", rightSlot, new ItemStack(Material.valueOf(emptyItem)), () -> { });
+            MenuAPI.setMenuItem(player, "Питомцы", closeSlot, new ItemsAPI.Builder().material(Material.BARRIER).displayName("&cУбрать питомца").lore("", "&7&nНажмите, что бы убрать").build().getItem(), () -> {
+                CustomPet.removePetForPlayer(player);
+                new PlayerAPI().setPet(player, null);
+                player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pets.remove"));
+                player.closeInventory();
+            });
         }
         return false;
-    }
-
-    @EventHandler
-    public void OnClickEvent(InventoryClickEvent e) {
-        if (e.getView().getTitle() == "Питомцы") {
-            e.setCancelled(true);
-            Player player = (Player) e.getWhoClicked();
-            if(!(empty_slots.contains(e.getSlot()) || e.getCurrentItem() == null)) {
-                new PlayerAPI().setPet(player, pets_cur.get(player).get(pets_slots.indexOf(e.getSlot())));
-                CustomPet.removePetForPlayer(player);
-                PetAPI petAPI = Prison.getInstance().getPet().loadPetData(new PlayerAPI().getPet(player));
-                Prison.getInstance().getPet().spawnPet(player, petAPI);
-                player.closeInventory();
-                player.sendMessage(new ChatColorAPI().getColoredString(petAPI.getName()+" был надет.").replace("%player%", player.getName()));
-            }
-        }
     }
 }

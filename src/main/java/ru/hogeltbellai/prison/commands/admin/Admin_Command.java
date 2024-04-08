@@ -82,6 +82,11 @@ public class Admin_Command implements CommandExecutor {
                     sender.sendMessage("Игрока нет на сервере");
                 }
             }
+            if (args.length == 3 && args[0].equalsIgnoreCase("pets")) {
+                String targetName = args[1];
+                String pets = args[2];
+
+            }
         }
         return false;
     }

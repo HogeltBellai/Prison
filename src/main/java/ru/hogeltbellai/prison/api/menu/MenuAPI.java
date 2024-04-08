@@ -18,6 +18,7 @@ import java.util.UUID;
 public class MenuAPI implements Listener {
 
     private static final Map<UUID, CustomMenu> customMenuMap = new HashMap<>();
+    private static InventoryClickEvent lastInventoryClickEvent;
 
     public static void createMenu(Player player, String title, int size) {
         CustomMenu customMenu = customMenuMap.get(player.getUniqueId());
@@ -39,8 +40,17 @@ public class MenuAPI implements Listener {
         }
     }
 
+    public static int getClickedItem() {
+        if (lastInventoryClickEvent != null) {
+            return lastInventoryClickEvent.getSlot();
+        } else {
+            return -1;
+        }
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        lastInventoryClickEvent = event;
         if(!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();

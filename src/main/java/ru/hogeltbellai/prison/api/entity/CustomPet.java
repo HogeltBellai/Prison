@@ -51,12 +51,12 @@ public class CustomPet {
         this.metadataPacket = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         this.destroyPacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_DESTROY);
 
-        createPet(location);
+        createPet(owner, location);
         startPetUpdate();
         playerPets.put(owner, this);
     }
 
-    public void createPet(Location location) {
+    public void createPet(Player player, Location location) {
         try {
             entityId = (int) (Math.random() * Integer.MAX_VALUE);
             spawnPacket.getIntegers().write(0, entityId);
@@ -76,7 +76,7 @@ public class CustomPet {
 
             WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
 
-            WrappedChatComponent displayName = WrappedChatComponent.fromText(ChatColor.translateAlternateColorCodes('&', petAPI.getName().replace("%player%", owner.getName())));
+            WrappedChatComponent displayName = WrappedChatComponent.fromText(ChatColor.translateAlternateColorCodes('&', petAPI.getName() + " &7" + player.getName()));
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, WrappedDataWatcher.Registry.getChatComponentSerializer(true)), Optional.of(displayName));
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, WrappedDataWatcher.Registry.get(Boolean.class)), true);
             dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(14, WrappedDataWatcher.Registry.get(Byte.class)), (byte) 0x01);
