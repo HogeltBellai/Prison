@@ -276,14 +276,18 @@ public class MenuConfigAPI {
                     int delay = Prison.getInstance().getConfig().getInt("prison.teleport.delay");
                     long timeLast;
 
-                    timeLast = Prison.getInstance().getLastTeleports().containsKey(player) ? Prison.getInstance().getLastTeleports().get(player) : 0;
+                    if (Prison.getInstance().getLastTeleports().containsKey(player)) {
+                        timeLast = delay - (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - Prison.getInstance().getLastTeleports().get(player));
+                    } else {
+                        timeLast = 0;
+                    }
+
 
                     World world = Bukkit.getWorld(worldName);
 
                     if (world != null) {
                         if (timeLast <= 0) {
                             long time = System.currentTimeMillis();
-                            Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                             Location location = new Location(world, x, y, z, yaw, pitch);
                             if (arg.length >= 7 && arg[6].equalsIgnoreCase("podval")) {
                                 if (arg.length >= 8) {
@@ -292,6 +296,7 @@ public class MenuConfigAPI {
                                     if (new PlayerAPI().hasPodval(player)) {
                                         if (playerLevel >= requiredLevel) {
                                             player.teleport(location);
+                                            Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                                             player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
                                         } else {
                                             player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
@@ -302,6 +307,7 @@ public class MenuConfigAPI {
                                 } else {
                                     if (new PlayerAPI().hasPodval(player)) {
                                         player.teleport(location);
+                                        Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
                                     } else {
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.podval_teleport"));
@@ -313,12 +319,14 @@ public class MenuConfigAPI {
                                     int playerLevel = new PlayerAPI().getLevel(player);
                                     if (playerLevel >= requiredLevel) {
                                         player.teleport(location);
+                                        Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
                                     } else {
                                         player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.level_teleport").replace("%level_required%", String.valueOf(requiredLevel)));
                                     }
                                 } else {
                                     player.teleport(location);
+                                    Prison.getInstance().getLastTeleports().put(player, TimeUnit.MILLISECONDS.toSeconds(time));
                                     player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.teleport"));
                                 }
                             }

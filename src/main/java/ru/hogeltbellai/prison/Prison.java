@@ -44,7 +44,7 @@ public class Prison extends JavaPlugin {
     @Getter public CaseManager caseManager;
     @Getter public Pet pet;
     @Getter public ProtocolManager protocolManager;
-    @Getter public HashMap<Player, Long> lastTeleports;
+    @Getter public HashMap<Player, Long> lastTeleports = new HashMap<>();
 
     ConfigAPI config;
 
