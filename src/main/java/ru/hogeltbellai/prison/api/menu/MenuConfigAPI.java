@@ -282,7 +282,6 @@ public class MenuConfigAPI {
                         timeLast = 0;
                     }
 
-
                     World world = Bukkit.getWorld(worldName);
 
                     if (world != null) {

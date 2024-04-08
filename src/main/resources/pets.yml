@@ -7,3 +7,23 @@ pets:
     potions:
       - SPEED:1200:1
       - INVISIBILITY:600:0
+menu:
+  size: 3
+  template:
+    - "AAAAAAAAA"
+    - "ABBBBBBBA"
+    - "FFFCEDFFF"
+  empty_slots:
+    symbol: "A"
+    item: AIR
+  pets_slots:
+    symbol: "B"
+  left_slot:
+    symbol: "C"
+    item: ARROW
+  right_slot:
+    symbol: "D"
+    item: ARROW
+  close_slot:
+    symbol: "E"
+    item: BARRIER

@@ -77,6 +77,7 @@ public class Prison extends JavaPlugin {
         new PrisonPlaceholder().register();
 
         new Pay_Command();
+        new Pets_Command();
         new Menu_Command();
         new Mine_Command();
         new LevelUP_Command();
@@ -93,6 +94,7 @@ public class Prison extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PetListener(), this);
 
         getServer().getPluginManager().registerEvents(new MenuAPI(), this);
+        getServer().getPluginManager().registerEvents(new Pets_Command(), this);
 
         MineAPI.MineFillTask mineFillTask = new MineAPI.MineFillTask(mineAPI);
         mineFillTask.runTaskTimerAsynchronously(Prison.getInstance(), 0, Prison.getInstance().getConfig().getInt("prison.mine.time") * 1200L);
