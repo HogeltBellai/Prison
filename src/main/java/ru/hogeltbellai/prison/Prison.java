@@ -14,6 +14,7 @@ import ru.hogeltbellai.prison.api.config.ConfigAPI;
 import ru.hogeltbellai.prison.api.entity.CustomPet;
 import ru.hogeltbellai.prison.api.menu.MenuAPI;
 import ru.hogeltbellai.prison.api.mine.MineAPI;
+import ru.hogeltbellai.prison.api.music.MusicAPI;
 import ru.hogeltbellai.prison.api.pet.Pet;
 import ru.hogeltbellai.prison.api.pet.PetAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
@@ -44,6 +45,7 @@ public class Prison extends JavaPlugin {
     @Getter public CaseManager caseManager;
     @Getter public Pet pet;
     @Getter public ProtocolManager protocolManager;
+    @Getter public MusicAPI musicAPI;
     @Getter public HashMap<Player, Long> lastTeleports = new HashMap<>();
 
     ConfigAPI config;
@@ -56,6 +58,7 @@ public class Prison extends JavaPlugin {
         caseManager = new CaseManager();
         pet = new Pet();
         protocolManager = ProtocolLibrary.getProtocolManager();
+        musicAPI = new MusicAPI("main");
         MineAPI mineAPI = new MineAPI();
 
         new ConfigAPI("levels");
@@ -71,6 +74,7 @@ public class Prison extends JavaPlugin {
 
         new SQLFileReader().saveFile("prison");
 
+        getNoteBlockAPI();
         getLuckPerms();
         initializeDatabase();
 
@@ -133,6 +137,13 @@ public class Prison extends JavaPlugin {
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
             luckPermsAPI = provider.getProvider();
+        }
+    }
+
+    public void getNoteBlockAPI() {
+        if (!Bukkit.getPluginManager().isPluginEnabled("NoteBlockAPI")){
+            getLogger().severe("*** NoteBlockAPI is not installed or not enabled. ***");
+            return;
         }
     }
 }

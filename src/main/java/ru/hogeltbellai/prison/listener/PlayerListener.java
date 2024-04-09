@@ -19,6 +19,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.hogeltbellai.lootnetwork.LootNetwork;
 import ru.hogeltbellai.prison.Prison;
@@ -26,6 +27,7 @@ import ru.hogeltbellai.prison.api.entity.CustomPet;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.location.LocationAPI;
 import ru.hogeltbellai.prison.api.menu.MenuConfigAPI;
+import ru.hogeltbellai.prison.api.music.MusicAPI;
 import ru.hogeltbellai.prison.api.pet.Pet;
 import ru.hogeltbellai.prison.api.pet.PetAPI;
 import ru.hogeltbellai.prison.api.player.PlayerAPI;
@@ -53,6 +55,7 @@ public class PlayerListener implements Listener {
             PetAPI petAPI = Prison.getInstance().getPet().loadPetData(new PlayerAPI().getPet(player));
             Prison.getInstance().getPet().spawnPet(player, petAPI);
         }
+        Prison.getInstance().getMusicAPI().play(player);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -60,6 +63,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         CustomPet.removePetForPlayer(player);
+        Prison.getInstance().getMusicAPI().stop(player);
     }
 
     @EventHandler
@@ -70,6 +74,19 @@ public class PlayerListener implements Listener {
         InventoryManager.saveInventory(player, event);
 
         InventoryManager.dropMoney(killer, player, 0.5);
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        ItemStack droppedItem = event.getItemDrop().getItemStack();
+
+        String customItemName = ItemsConfigAPI.getItemNameByMaterial(droppedItem);
+        if (customItemName != null) {
+            if(ItemsConfigAPI.getShouldDrop(customItemName) == false) {
+                event.setCancelled(true);
+                MenuConfigAPI.createMenuConfig(event.getPlayer(), "drop");
+            }
+        }
     }
 
     @EventHandler

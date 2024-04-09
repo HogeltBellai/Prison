@@ -8,6 +8,7 @@ authors: [HogeltBellai]
 softdepend:
   - PlaceholderAPI
   - LootNetwork
+  - NoteBlockAPI
 
 commands:
   pay:

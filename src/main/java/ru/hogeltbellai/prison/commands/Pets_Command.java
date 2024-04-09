@@ -133,6 +133,7 @@ public class Pets_Command implements CommandExecutor, Listener {
             MenuAPI.setMenuItem(player, "Питомцы", closeSlot, new ItemsAPI.Builder().material(Material.BARRIER).displayName("&cУбрать питомца").lore("", "&7&nНажмите, что бы убрать").build().getItem(), () -> {
                 CustomPet.removePetForPlayer(player);
                 new PlayerAPI().setPet(player, null);
+                player.setWalkSpeed(0.2f);
                 player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.pets.remove"));
                 player.closeInventory();
             });

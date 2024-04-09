@@ -9,10 +9,12 @@ import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.chatcolor.ChatColorAPI;
 import ru.hogeltbellai.prison.api.config.ConfigAPI;
@@ -185,6 +187,7 @@ public class MenuConfigAPI {
                 }
             }
         }),
+        PLAYER_DROP_ITEM(ActionType::dropItemInHand),
         UPGRADE_ITEM(ActionType::upgradeItem),
         TELEPORT(ActionType::teleport),
         SELECT_FRACTION(ActionType::selectFraction),
@@ -359,6 +362,18 @@ public class MenuConfigAPI {
             }
             new PlayerAPI().setFraction(player, arg[0]);
             player.sendMessage(new MessageAPI().getMessage(new ConfigAPI("config"), player, "messages.fraction.join").replace("%fraction%", new PlayerAPI().getFraction(player)));
+        }
+
+        private static void dropItemInHand(Player player, String... arg) {
+            if (arg.length == 0) {
+                ItemStack itemInHand = player.getInventory().getItemInMainHand();
+                if (itemInHand != null && !itemInHand.getType().equals(Material.AIR)) {
+                    player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                    @NotNull Item itemDrop = player.getWorld().dropItem(player.getLocation(), itemInHand);
+                    itemDrop.setGlowing(true);
+                    itemDrop.setPickupDelay(60);
+                }
+            }
         }
     }
 }

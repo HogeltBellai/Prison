@@ -1,6 +1,7 @@
 package ru.hogeltbellai.prison.listener;
 
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +25,7 @@ public class BlockListener implements Listener {
                     new PlayerAPI().setBlockData(new PlayerAPI().getId(player), event.getBlock().getType().toString(), 1);
 
                     player.getInventory().addItem(new ItemStack(event.getBlock().getType()));
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     event.setDropItems(false);
                     event.setExpToDrop(0);
 
