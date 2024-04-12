@@ -3,6 +3,7 @@ package ru.hogeltbellai.prison.placeholder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import ru.hogeltbellai.prison.Prison;
 import ru.hogeltbellai.prison.api.items.ItemsConfigAPI;
 import ru.hogeltbellai.prison.api.task.ItemTaskAPI;
 import ru.hogeltbellai.prison.api.task.PlayerTaskAPI;
@@ -11,6 +12,7 @@ import ru.hogeltbellai.prison.api.player.PlayerAPI;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PrisonPlaceholder extends PlaceholderExpansion {
@@ -131,6 +133,28 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
                 } else return "";
             }
         }
+        // %prison_top_users_money_1_name%
+        if (identifier.startsWith("top")) {
+            String[] parts = identifier.split("_");
+            if (parts.length == 5) {
+                String base = parts[1];
+                String value = parts[2];
+                Integer pos = Integer.parseInt(parts[3]);
+                String res = null;
+
+                if (Objects.equals(parts[4], "name")) {
+                    res = Prison.getInstance().getDatabase().getVaule("SELECT name FROM " + base + " ORDER BY " + value + " DESC LIMIT 1 OFFSET " + (pos - 1), String.class);
+                }
+                if (Objects.equals(parts[4], "value")) {
+                    res = String.valueOf(Prison.getInstance().getDatabase().getVaule("SELECT " + value + " FROM " + base + " ORDER BY " + value + " DESC LIMIT 1 OFFSET " + (pos - 1), BigDecimal.class));
+                }
+                if (String.valueOf(res).equals("null")) {
+                    return "пусто";
+                }
+                return res;
+            }
+        }
+
         return null;
     }
 }
