@@ -143,10 +143,10 @@ public class PrisonPlaceholder extends PlaceholderExpansion {
                 String res = null;
 
                 if (Objects.equals(parts[4], "name")) {
-                    res = Prison.getInstance().getDatabase().getVaule("SELECT name FROM " + base + " ORDER BY " + value + " DESC LIMIT 1 OFFSET " + (pos - 1), String.class);
+                    res = Prison.getInstance().getDatabase().getVaule("SELECT name FROM " + base + " ORDER BY " + value + " DESC, name ASC LIMIT 1 OFFSET " + (pos - 1), String.class);
                 }
                 if (Objects.equals(parts[4], "value")) {
-                    res = String.valueOf(Prison.getInstance().getDatabase().getVaule("SELECT " + value + " FROM " + base + " ORDER BY " + value + " DESC LIMIT 1 OFFSET " + (pos - 1), BigDecimal.class));
+                    res = String.valueOf(Prison.getInstance().getDatabase().getVaule("SELECT " + value + " FROM " + base + " ORDER BY " + value + " DESC, name ASC LIMIT 1 OFFSET " + (pos - 1), BigDecimal.class));
                 }
                 if (String.valueOf(res).equals("null")) {
                     return "пусто";
